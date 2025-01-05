@@ -87,4 +87,4 @@ function drawGraph(dates, values) {
             }
         }
     });
-}
+};

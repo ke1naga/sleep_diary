@@ -8,12 +8,14 @@ const port = 3000;
 const cors = require('cors');
 app.use(cors()); // 全てのリクエストを許可
 
+require('dotenv').config();  // dotenvを読み込む
+
 // MySQL接続設定
 const connection = mysql.createConnection({
-  host: 'localhost',
-  user: 'kei',  
-  password: 'zcbmadgjl',  
-  database: 'sleep_data',
+  host: 'process.env.DB_HOST',
+  user: 'process.env.DB_USER',  
+  password: 'process.env.DB_PASSWORD',  
+  database: 'sleep_datprocess.env.DB_NAME',
 });
 
 // MySQL接続
@@ -31,6 +33,7 @@ app.use(bodyParser.json());
 // 数値をデータベースに保存するエンドポイント
 app.post('/save', (req, res) => {
   const {date,value } = req.body;
+  console.log('Received data:',{date,value});
   connection.query('INSERT INTO data (date,value) VALUES (?,?)',[date,value],(err,result)=>{
     if (err) {
         res.status(500).json({error:'データベースエラー'});
