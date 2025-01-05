@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sleep Diary</title>
+    <meta name="description" content="双極性障害の人が毎日の睡眠や気分の状態を記録するための日記。">
+    <link rel ="stylesheet" href="ress.css">  <!--リセットcss-->
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!--ogp-->
+    <meta property="og:title" content="Sleep Diary">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="">
+    <meta property="og:image" content="">
+    <meta name="og:description" content="双極性障害の人が毎日の睡眠や気分の状態を記録するための日記。">
+    <!--favicon-->
+    <link rel="icon" type="image/png" href="">
+    <!--chart.js-->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    </head>
+    <body>
+      <h1>日付と数値の入力</h1>
+      
+      <!-- 日付と数値入力フォーム -->
+      <form id="dataForm">
+        <label for="date">日付:</label>
+        <input type="date" id="date" required>
+        
+        <label for="number">数値:</label>
+        <input type="number" id="number" required>
+        
+        <button type="submit">保存</button>
+      </form>
+      
+      <h2>入力されたデータのグラフ</h2>
+      <canvas id="myChart" width="400" height="200"></canvas>
+    
+      <script>
+        const form = document.getElementById('dataForm');
+        const dateInput = document.getElementById('date');
+        const numberInput = document.getElementById('number');
+    
+        let dates = [];
+        let numbers = [];
+    
+        // フォーム送信時にデータを送信し、グラフを更新
+        form.addEventListener('submit', function(event) {
+          event.preventDefault(); // フォーム送信を防ぐ
+    
+          const date = dateInput.value;
+          const number = numberInput.value;
+    
+          // サーバーにデータを送信
+          fetch('http://localhost:3000/save', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ date: date, value: number })
+          })
+          .then(response => response.json())
+          .then(data => {
+            console.log('保存成功:', data);
+            // 入力されたデータをグラフに追加
+            dates.push(date);
+            numbers.push(number);
+            drawGraph(dates, numbers);
+          })
+          .catch(error => {
+            console.error('保存エラー:', error);
+          });
+    
+          dateInput.value = ''; // フォームをクリア
+          numberInput.value = '';
+        });
+
+        // ページロード時に保存されたデータを取得してグラフを描画
+        window.onload = function() {
+         fetch('http://localhost:3000/getData')
+            .then(response => response.json())
+            .then(data => {
+        // 取得したデータをグラフ用に整形
+        const dates = data.map(entry => entry.date);
+        const numbers = data.map(entry => entry.value);
+      
+        drawGraph(dates, numbers); // グラフを描画
+        })
+        .catch(error => console.error('データ取得エラー:', error));
+    };
+    
+        // グラフ描画関数
+        function drawGraph(dates, numbers) {
+          const ctx = document.getElementById('myChart').getContext('2d');
+          new Chart(ctx, {
+            type: 'line',
+            data: {
+              labels: dates,
+              datasets: [{
+                label: '数値',
+                data: numbers,
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1,
+                fill: false
+              }]
+            },
+            options: {
+              responsive: true,
+              scales: {
+                y: {
+                  beginAtZero: true
+                }
+              }
+            }
+          });
+        }
+      </script>
+    </body>
+    </html>
+    
