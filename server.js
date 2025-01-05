@@ -5,6 +5,9 @@ const bodyParser = require('body-parser');
 const app = express();
 const port = 3000;
 
+const cors = require('cors');
+app.use(cors()); // 全てのリクエストを許可
+
 // MySQL接続設定
 const connection = mysql.createConnection({
   host: 'localhost',
@@ -27,8 +30,8 @@ app.use(bodyParser.json());
 
 // 数値をデータベースに保存するエンドポイント
 app.post('/save', (req, res) => {
-  const {data,value } = req.body;
-  connection.query('INSERT INTO data (data,value) VALUES (?,?)'[data,value],(err,result)=>{
+  const {date,value } = req.body;
+  connection.query('INSERT INTO data (date,value) VALUES (?,?)',[date,value],(err,result)=>{
     if (err) {
         res.status(500).json({error:'データベースエラー'});
     }else{
@@ -36,6 +39,7 @@ app.post('/save', (req, res) => {
   }
 });
 });
+
 
 // データ取得エンドポイント
 app.get('/getData', (req, res) => {
