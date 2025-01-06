@@ -36,6 +36,11 @@ window.onload = function() {
         .then(response => response.json())
         .then(data => {
             // 取得したデータをグラフ用に整形
+            // データを取得した後に日付順でソート
+
+            // 日付順にソート
+            const sortedData = data.sort((a, b) => new Date(a.date) - new Date(b.date));
+            console.log(sortedData);
             dates = data.map(entry => entry.date);
             values = data.map(entry => entry.value);
             if(dates.length>0){
@@ -80,11 +85,12 @@ function drawGraph(dates, values) {
                 y: {
                     title: {
                         display: true,
-                        text: '数値'
+                        text: '睡眠時間'
                     },
                     beginAtZero: true  // Y軸を0から始める
                 }
             }
+           
         }
     });
 };

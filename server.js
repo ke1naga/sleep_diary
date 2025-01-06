@@ -43,10 +43,32 @@ app.post('/save', (req, res) => {
 });
 });
 
+// データの上書き
+app.post('/updateData', (req, res) => {
+  const { id, date, value } = req.body;
+
+  // 必要なデータがあるか確認
+  if (!id || !date || value === undefined) {
+    return res.status(400).json({ error: '必要なデータが不足しています' });
+  }
+
+  const query = 'UPDATE sleep_info SET date = ?, value = ? WHERE id = ?';
+
+  connection.query(query, [date, value, id], (err, result) => {
+    if (err) {
+      console.error('データ更新エラー:', err);
+      res.status(500).json({ error: 'データ更新エラー' });
+    } else {
+      res.json({ success: true, affectedRows: result.affectedRows });
+    }
+  });
+});
+
+
 
 // データ取得エンドポイント
 app.get('/getData', (req, res) => {
-    connection.query('SELECT * FROM sleep_info', (err, results) => {
+    connection.query('SELECT * FROM sleep_info ORDER BY date ASC', (err, results) => {
       if (err) {
         res.status(500).json({ error: 'データ取得エラー' });
       } else {
