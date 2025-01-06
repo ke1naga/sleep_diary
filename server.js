@@ -36,6 +36,8 @@ function isValidDate(dateString) {
 }
 
 // データの追加または上書きエンドポイント
+const { utcToZonedTime, format } = require('date-fns-tz');
+
 app.post('/saveOrUpdate', (req, res) => {
   const { date, value } = req.body;
 
@@ -46,6 +48,11 @@ app.post('/saveOrUpdate', (req, res) => {
   if (value === undefined) {
     return res.status(400).json({ error: '値が必要です' });
   }
+
+      // 日付を日本時間で保存する
+      const jstDate = utcToZonedTime(new Date(date), 'Asia/Tokyo');
+      const formattedDate = format(jstDate, 'yyyy-MM-dd');
+  
 
   const query = `
     INSERT INTO sleep_info (date, value)

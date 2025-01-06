@@ -1,3 +1,4 @@
+
 document.getElementById('dataForm').addEventListener('submit', function(event) {
     event.preventDefault(); // フォーム送信を防ぐ
 
@@ -5,9 +6,13 @@ document.getElementById('dataForm').addEventListener('submit', function(event) {
     const value = parseFloat(document.getElementById('number').value); // 入力された数値 (数値に変換)
 
     const date = new Date(dateInput);  // 日付をDateオブジェクトに変換
-    const formattedDate = date.toISOString().split('T')[0];  // 'YYYY-MM-DD'形式に変換
-    console.log(formattedDate);  // 例: "2025-01-05"
     
+    
+    const formattedDate =date.toISOString().split('T')[0];  // 'YYYY-MM-DD'形式に変換
+    console.log(formattedDate);  // 例: "2025-01-05"
+    console.log(date.toLocaleDateString()); // ローカルタイムでの表示
+
+
     // クライアント側でデータを送信
     fetch('http://localhost:3000/saveOrUpdate', {
         method: 'POST',
@@ -55,8 +60,18 @@ window.onload = function() {
             // 日付順にソート
             const sortedData = data.sort((a, b) => new Date(a.date) - new Date(b.date));
             console.log(sortedData);
-            dates = sortedData.map(entry => entry.date);
+            dates = sortedData.map(entry => {
+                // 日付を日本時間に変換
+                const utcDate = new Date(entry.date);
+                const jstDate = new Date(utcDate.getTime() + 9 * 60 * 60 * 1000); // UTC → JST (+9時間)
+                return jstDate.toISOString().split('T')[0]; // YYYY-MM-DD
+            });
+
             values = sortedData.map(entry => entry.value);
+
+            console.log('変換後の日付:', dates);
+            console.log('変換後の値:', values);
+            
             if(dates.length>0){
                 drawGraph(dates, values); // グラフを描画
             }else{
@@ -87,7 +102,7 @@ function drawGraph(dates, values) {
         data: {
             labels: dates,  // X軸は日付
             datasets: [{
-                label: '入力された数値',
+                label: '睡眠時間の波',
                 data: values,  // Y軸は数値
                 borderColor: 'rgba(75, 192, 192, 1)',
                 backgroundColor: 'rgba(75, 192, 192, 0.2)',
@@ -128,3 +143,4 @@ function drawGraph(dates, values) {
         }
     });
 };
+

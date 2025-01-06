@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sleep Diary</title>
+    <meta name="description" content="双極性障害の人が毎日の睡眠や気分の状態を記録するための日記。">
+    <link rel ="stylesheet" href="ress.css">  <!--リセットcss-->
+    <link rel="stylesheet" href="styles.css">
+    <!--ogp-->
+    <meta property="og:title" content="Sleep Diary">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="">
+    <meta property="og:image" content="">
+    <meta name="og:description" content="双極性障害の人が毎日の睡眠や気分の状態を記録するための日記。">
+    <!--favicon-->
+    <link rel="icon" type="image/png" href="">
+    <!--chart.js-->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.8.0/dist/chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@1.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+    </head>
+    <body>
+      <header>
+        <h1>Sleep Diary for me</h1>
+      </header>
+      <main>
+
+        <h2>データ一覧</h2>
+        <table id="dataTable">
+          <thead>
+            <tr>
+              <th>日付</th>
+              <th>数値</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- データ行はここに追加されます -->
+          </tbody>
+        </table>
+      
+
+        <script>
+            //YYY-MM-DD
+
+
+          // データを取得してテーブルに表示
+          window.onload = function() {
+            fetch('http://localhost:3000/getData')
+              .then(response => response.json())
+              .then(data => {
+                const tableBody = document.getElementById('dataTable').getElementsByTagName('tbody')[0];
+               
+                data.forEach(row => {
+                  const newRow = tableBody.insertRow();
+                  const dateCell = newRow.insertCell(0);
+                  const valueCell = newRow.insertCell(1);
+                  
+                  // 日付のフォーマットを 'YYYY-MM-DD' に変更
+                    const utcDate = new Date(row.date);
+                    const jstDate= new Date(utcDate.getTime() + 9 * 60 * 60 * 1000);//UTCから９時間加算
+                    const formattedDate = jstDate.toISOString().split('T')[0];  // 'YYYY-MM-DD'形式
+                    console.log(jstDate.toLocaleDateString()); // ローカルタイムでの表示
+                  
+                    dateCell.textContent = formattedDate;  // 日付を設定
+                    valueCell.textContent = row.value;  // 数値を設定
+                });
+              })
+              .catch(error => {
+                console.error('データ取得エラー:', error);
+              });
+          };
+        </script>
+       
+      </main>
+      <footer>
+      </footer>
+    </body>
+    </html>
+    
