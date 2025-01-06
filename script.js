@@ -4,10 +4,12 @@ document.getElementById('dataForm').addEventListener('submit', function(event) {
 
     const dateInput = document.getElementById('date').value; // 入力された日付
     const value = parseFloat(document.getElementById('number').value); // 入力された数値 (数値に変換)
+    const moodScore = parseFloat(document.getElementById('moodScore').value);  // 入力された気分スコア
 
+     // 入力データのログを追加
+     console.log('送信するデータ:', { date: dateInput, value: value, moodScore: moodScore });
+     
     const date = new Date(dateInput);  // 日付をDateオブジェクトに変換
-    
-    
     const formattedDate =date.toISOString().split('T')[0];  // 'YYYY-MM-DD'形式に変換
     console.log(formattedDate);  // 例: "2025-01-05"
     console.log(date.toLocaleDateString()); // ローカルタイムでの表示
@@ -19,7 +21,7 @@ document.getElementById('dataForm').addEventListener('submit', function(event) {
         headers: {
             'Content-Type': 'application/json',  // JSONデータを送信
         },
-        body: JSON.stringify({ date: formattedDate, value: value })  // 送信するデータ
+        body: JSON.stringify({ date: formattedDate, value: value, moodScore: moodScore})  // 送信するデータ
     })
     .then(response => response.json())  // レスポンスをJSON形式で取得
     .then(data => {
@@ -35,11 +37,12 @@ document.getElementById('dataForm').addEventListener('submit', function(event) {
             // 新しい日付なら追加
             dates.push(formattedDate);
             values.push(value);
+            values2.push(moodScore);
         }
         // データが保存された後にグラフを更新
         // 既存のデータに新しいデータを追加
-        console.log(dates,values);//データが正しく渡されているか確認
-        drawGraph(dates, values);  // 新しいデータでグラフ更新
+        console.log(dates,values,values2);//データが正しく渡されているか確認
+        drawGraph(dates, values,values2);  // 新しいデータでグラフ更新
     })
     .catch(error => {
         console.error('保存エラー:', error);  // エラー処理
@@ -49,6 +52,7 @@ document.getElementById('dataForm').addEventListener('submit', function(event) {
 // 初期のデータを保持
 let dates = [];
 let values = [];
+let values2 = [];
 
 // ページロード時に保存されたデータを取得してグラフを描画
 window.onload = function() {
@@ -68,12 +72,14 @@ window.onload = function() {
             });
 
             values = sortedData.map(entry => entry.value);
+            values2 = sortedData.map(entry=>entry.mood_score);
 
             console.log('変換後の日付:', dates);
             console.log('変換後の値:', values);
+            console.log('変換後の気分スコア:', values2);
 
             if(dates.length>0){
-                drawGraph(dates, values); // グラフを描画
+                drawGraph(dates, values, values2); // グラフを描画
             }else{
                 console.log('グラフ描画するデータがありません')
             }
@@ -84,9 +90,9 @@ window.onload = function() {
 // グラフ描画関数
 let chartInstance = null;
 
-function drawGraph(dates, values) {
+function drawGraph(dates, values,values2) {
     const ctx = document.getElementById('lineChart').getContext('2d');
-    console.log('グラフの描画の準備',dates,values);//データ確認
+    console.log('グラフの描画の準備',dates,values,values2);//データ確認
   
     if(!ctx){
         console.error('キャンバスが見つかりません');
@@ -101,14 +107,24 @@ function drawGraph(dates, values) {
         type: 'line',
         data: {
             labels: dates,  // X軸は日付
-            datasets: [{
+            datasets: [
+                {
                 label: '睡眠時間',
                 data: values,  // Y軸は数値
                 borderColor: 'rgba(75, 192, 192, 1)',
                 backgroundColor: 'rgba(75, 192, 192, 0.2)',
                 fill: false,
                 tension: 0.1
-            }]
+                },
+                {
+                    label: '気分スコア',  // 2番目のデータセット（例: 気分スコア）
+                    data: values2,     // Y軸のデータ（気分スコア）
+                    borderColor: 'rgb(121, 255, 139)', // 線の色（気分スコア）
+                    backgroundColor: 'rgba(114, 255, 119, 0.2)',  // 塗りつぶし色
+                    fill: false,  // 塗りつぶし無し
+                    tension: 0.1
+                }
+            ]
         },
         options: {
             responsive: true,

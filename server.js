@@ -39,7 +39,9 @@ function isValidDate(dateString) {
 const { utcToZonedTime, format } = require('date-fns-tz');
 
 app.post('/saveOrUpdate', (req, res) => {
-  const { date, value } = req.body;
+  const { date, value, moodScore} = req.body;
+
+  console.log('受け取ったデータ:', { date, value, moodScore });  // ここで確認
 
   if (!date || !isValidDate(date)) {
     return res.status(400).json({ error: '無効な日付形式です' });
@@ -55,13 +57,14 @@ app.post('/saveOrUpdate', (req, res) => {
   
 
   const query = `
-    INSERT INTO sleep_info (date, value)
-    VALUES (?, ?)
+    INSERT INTO sleep_info (date, value, mood_score)
+    VALUES (?, ?, ?)
     ON DUPLICATE KEY UPDATE
-    value = VALUES(value)
+    value = VALUES(value),
+    mood_score = VALUES(mood_score);
   `;
 
-  connection.query(query, [date, value], (err, result) => {
+  connection.query(query, [date, value, moodScore], (err, result) => {
     if (err) {
       console.error('データベースエラー:', err);
       res.status(500).json({ error: 'データベースエラー',message: err.message});
