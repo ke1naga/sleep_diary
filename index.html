@@ -20,7 +20,11 @@
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@1.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
     </head>
     <body>
-      <h1>日付と数値の入力</h1>
+      <header>
+        <h1>Sleep Diary for me</h1>
+      </header>
+      <main>
+      <h2>日付と数値の入力</h2>
       
       <!-- 日付と数値入力フォーム -->
       <form id="dataForm">
@@ -33,10 +37,13 @@
         <button type="submit">保存</button>
       </form>
       
-      <h2>入力されたデータのグラフ</h2>
-      <canvas id="lineChart" style="width: 80%;margin:0 auto;"></canvas>
+      <h3>入力されたデータのグラフ</h3>
+      <canvas id="lineChart"></canvas>
     
       <script src="script.js"></script>
+      </main>
+      <footer>
+      </footer>
     </body>
     </html>
     
