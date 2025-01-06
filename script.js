@@ -19,10 +19,20 @@ document.getElementById('dataForm').addEventListener('submit', function(event) {
     .then(response => response.json())  // レスポンスをJSON形式で取得
     .then(data => {
         console.log('保存成功:', data);
+
+           // 保存されたデータが更新または新規の場合
+           const index = dates.findIndex(d => d === formattedDate); // 同じ日付がすでに存在するか確認
+
+           if (index !== -1) {
+            // 同じ日付が存在する場合はその数値を上書き
+            values[index] = value;
+        } else {
+            // 新しい日付なら追加
+            dates.push(formattedDate);
+            values.push(value);
+        }
         // データが保存された後にグラフを更新
         // 既存のデータに新しいデータを追加
-        dates.push(formattedDate);
-        values.push(value);
         console.log(dates,values);//データが正しく渡されているか確認
         drawGraph(dates, values);  // 新しいデータでグラフ更新
     })
