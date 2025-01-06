@@ -12,6 +12,33 @@ header{
     padding: 0.5rem;
 }
 
+nav{
+    display:flex;
+    justify-content: flex-end;
+}
+
+nav ul{
+    list-style-type: none;       
+    display:flex;  
+}
+
+nav a{    
+    display: inline-block;      /* aタグをインラインブロックにして横並びに */
+    margin-left: 1rem;          /* アイテム間にスペース */
+    text-decoration: none;  /* 下線を消す */
+    color:black;
+    background-color: #c1fffb;
+    padding:0.3rem;
+    border-radius: 8px;
+    min-width: 5rem;
+    min-height:2rem;
+}
+
+/* ホバー時のスタイル */
+nav a:hover {
+    background-color: #00b5a3;             /* ホバー時に文字色を変更 */
+}
+
 main{
     margin: 0 auto;
     width:80%;   

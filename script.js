@@ -71,7 +71,7 @@ window.onload = function() {
 
             console.log('変換後の日付:', dates);
             console.log('変換後の値:', values);
-            
+
             if(dates.length>0){
                 drawGraph(dates, values); // グラフを描画
             }else{
@@ -102,7 +102,7 @@ function drawGraph(dates, values) {
         data: {
             labels: dates,  // X軸は日付
             datasets: [{
-                label: '睡眠時間の波',
+                label: '睡眠時間',
                 data: values,  // Y軸は数値
                 borderColor: 'rgba(75, 192, 192, 1)',
                 backgroundColor: 'rgba(75, 192, 192, 0.2)',
