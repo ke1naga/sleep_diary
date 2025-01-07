@@ -39,15 +39,18 @@
 
     <!-- 日付と数値入力フォーム -->
     <form id="dataForm">
+      <div>
       <label for="date">日付:</label>
       <input type="date" id="date" required>
-
+      </div>
+      <div>
       <label for="value">睡眠時間:</label>
-      <input type="number" id="value" required>
-
+      <input class="int" type="number" id="value" required>
+      </div>
+      <div>
       <label for="mood">気分スコア:</label>
-      <input type="number" id="mood" required>
-
+      <input class="int" type="number" id="mood" required>
+      </div>
       <button type="submit">保存</button>
     </form>
 

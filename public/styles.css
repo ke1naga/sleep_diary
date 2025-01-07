@@ -45,7 +45,13 @@ main{
 }
 
 form {
+    display:flex;
     margin-bottom: 2rem;
+}
+
+.int{
+    width:50%;
+    margin:0;
 }
 
 button {
@@ -67,6 +73,7 @@ canvas {
     box-shadow: 0.1rem 0.1rem 0.1rem 0.1rem grey;
 }
 
+
 /*data.html*/
     table {
       width: 80%;
@@ -80,3 +87,15 @@ canvas {
     th {
       background-color: #67ffd6;
     }
+
+
+@media(max-width:500px){
+form{
+    flex-direction: column;    
+}
+
+.int{
+    width:30%;
+}
+
+}

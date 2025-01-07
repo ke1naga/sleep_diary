@@ -53,7 +53,7 @@
 
           // データを取得してテーブルに表示
           window.onload = function() {
-            fetch('http://localhost:3000/getData')
+            fetch('http://192.168.10.112:3000/getData')
               .then(response => response.json())
               .then(data => {
                 const tableBody = document.getElementById('dataTable').getElementsByTagName('tbody')[0];
