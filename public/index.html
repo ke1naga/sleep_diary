@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sleep Diary</title>
+  <meta name="description" content="双極性障害の人が毎日の睡眠や気分の状態を記録するための日記。">
+  <link rel="stylesheet" href="ress.css">  <!--リセットcss-->
+  <link rel="stylesheet" href="styles.css">
+
+  <!--ogp-->
+  <meta property="og:title" content="Sleep Diary">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="">
+  <meta property="og:image" content="">
+  <meta name="og:description" content="双極性障害の人が毎日の睡眠や気分の状態を記録するための日記。">
+
+  <!--favicon-->
+  <link rel="icon" type="image/png" href="">
+
+  <!--chart.js-->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@3.8.0/dist/chart.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@1.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+</head>
+<body>
+  <header>
+    <h1>Sleep Diary for me</h1>
+    <nav>
+      <ul>
+        <li><a href="index.html">グラフ</a></li>
+        <li><a href="data.html">データ</a></li>
+        <li><a href="top.html">TOP</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <h2>日付と数値の入力</h2>
+
+    <!-- 日付と数値入力フォーム -->
+    <form id="dataForm">
+      <label for="date">日付:</label>
+      <input type="date" id="date" required>
+
+      <label for="value">睡眠時間:</label>
+      <input type="number" id="value" required>
+
+      <label for="mood">気分スコア:</label>
+      <input type="number" id="mood" required>
+
+      <button type="submit">保存</button>
+    </form>
+
+    <h3>睡眠時間の波</h3>
+    <canvas id="lineChart"></canvas>
+
+    <script src="script.js"></script>
+  </main>
+
+  <footer>
+  </footer>
+</body>
+</html>

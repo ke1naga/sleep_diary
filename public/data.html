@@ -24,9 +24,9 @@
         <h1>Sleep Diary for me</h1>
         <nav>
             <ul>
-              <li><a href="/index.html">グラフ</a></li>
+              <li><a href="index.html">グラフ</a></li>
               <li><a href="data.html">データ</a></li>
-              <li><a href="/top.html">TOP</a></li>
+              <li><a href="top.html">TOP</a></li>
             </ul>
           </nav>
       </header>
@@ -72,6 +72,7 @@
                   
                     dateCell.textContent = formattedDate;  // 日付を設定
                     valueCell.textContent = row.value;  // 数値を設定
+                    moodCell.textContent = row.mood;
                 });
               })
               .catch(error => {
