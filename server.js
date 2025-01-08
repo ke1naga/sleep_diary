@@ -146,6 +146,6 @@ app.get('/getData', isAuthenticated, (req, res) => {
 
 // サーバーを起動
 app.listen(port, '0.0.0.0', () => {
-  console.log(`Server is running on http://0.0.0.0:${port}`);
+  console.log(`http://0.0.0.0:${port}で動いでます`);
 });
 

@@ -1,3 +1,5 @@
+const base_url = 'http://192.168.10.112:3000';
+
 document.getElementById('dataForm').addEventListener('submit', function (event) {
     event.preventDefault(); // フォーム送信を防ぐ
 
@@ -14,7 +16,7 @@ document.getElementById('dataForm').addEventListener('submit', function (event) 
     console.log(formattedDate);  // 例: "2025-01-05"
 
     // クライアント側でデータを送信
-    fetch('http://192.168.10.112:3000/saveOrUpdate', {
+    fetch(`${base_url}/saveOrUpdate`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'  // JSONデータを送信
@@ -65,7 +67,7 @@ let diaries = [];
 
 // ページロード時に保存されたデータを取得してグラフを描画
 window.onload = function () {
-    fetch('http://192.168.10.112:3000/getData')
+    fetch(`${base_url}/getData`)
         .then(response => response.json())
         .then(data => {
             console.log('取得したデータ：', data); // データの確認
