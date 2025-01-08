@@ -94,11 +94,16 @@ app.get('/logout', (req, res) => {
 
 const { parseISO, format } = require('date-fns');
 
+function isValidDate(dateString) {
+  const date = parseISO(dateString);
+  return isValid(date); //有効な日付かチェック
+}
+
 // データの追加または上書きエンドポイント
 app.post('/saveOrUpdate', (req, res) => {
-  const { date, value, mood } = req.body;
+  const { date, value, mood, diary } = req.body;
 
-  console.log('受け取ったデータ:', { date, value, mood });  // ここで確認
+  console.log('受け取ったデータ:', { date, value, mood, diary });  // ここで確認
 
   if (!date || !isValidDate(date)) {
     return res.status(400).json({ error: '無効な日付形式です' });
@@ -114,14 +119,15 @@ app.post('/saveOrUpdate', (req, res) => {
   console.log(formattedDate);  // 例: '2025-01-09'
   
   const query = `
-    INSERT INTO sleep_info (date, value, mood)
-    VALUES (?, ?, ?)
+    INSERT INTO sleep_info (date, value, mood, diary)
+    VALUES (?, ?, ?, ?)
     ON DUPLICATE KEY UPDATE
     value = VALUES(value),
-    mood = VALUES(mood);
+    mood = VALUES(mood),
+    diary = VALUES(diary);
   `;
 
-  connection.query(query, [formattedDate, value, mood], (err, result) => {
+  connection.query(query, [formattedDate, value, mood, diary], (err, result) => {
     if (err) {
       console.error('データベースエラー:', err);
       res.status(500).json({ error: 'データベースエラー', message: err.message });
