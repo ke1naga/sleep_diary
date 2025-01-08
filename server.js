@@ -41,11 +41,6 @@ connection.connect((err) => {
   console.log('MySQLに接続しました');
 });
 
-// 日付形式が正しいかを検証する関数
-function isValidDate(dateString) {
-  const regex = /^\d{4}-\d{2}-\d{2}$/;  // YYYY-MM-DD の正規表現
-  return regex.test(dateString);
-}
 
 // ログインが必要なエンドポイント用のミドルウェア
 function isAuthenticated(req, res, next) {
@@ -92,7 +87,8 @@ app.get('/logout', (req, res) => {
   });
 });
 
-const { parseISO, format } = require('date-fns');
+//日付がただしいかどうか
+const { parseISO, format, isValid } = require('date-fns');
 
 function isValidDate(dateString) {
   const date = parseISO(dateString);
@@ -150,6 +146,6 @@ app.get('/getData', isAuthenticated, (req, res) => {
 
 // サーバーを起動
 app.listen(port, '0.0.0.0', () => {
-  console.log('Server is running on http://0.0.0.0:${port}');
+  console.log(`Server is running on http://0.0.0.0:${port}`);
 });
 
