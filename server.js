@@ -1,5 +1,5 @@
 const express = require('express');
-const mysql = require('mysql2');
+const mysql = require('mysql2/promise');
 const session = require('express-session'); // セッションを使うために追加
 const app = express();
 const port = 3000;
@@ -8,11 +8,38 @@ const cors = require('cors');
 
 require('dotenv').config();  // dotenvを読み込む
 
+// データベース接続プールを設定
+const db = mysql.createPool({
+  host: process.env.DB_HOST,
+  port: process.env.DB_PORT,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0,
+});
+
+// 非同期接続テスト
+async function testConnection() {
+  try {
+    const [rows] = await db.query('SELECT 1');
+    console.log('データベース接続成功:', rows);
+  } catch (error) {
+    console.error('データベース接続エラー:', error);
+    process.exit(1); // エラー時はプロセス終了
+  }
+}
+testConnection();
+
 // 静的ファイルを提供
 app.use(express.static('public')); // 'public' フォルダ内の静的ファイルを提供
 
 // URLエンコードされたデータをパース
-app.use(express.urlencoded({ extended: true })); // この行を追加
+app.use(express.urlencoded({ extended: true })); 
+
+app.use(cors()); // 全てのリクエストを許可
+app.use(express.json()); // JSON
 
 // セッション設定
 app.use(session({
@@ -20,26 +47,6 @@ app.use(session({
   resave: false,
   saveUninitialized: true
 }));
-
-app.use(cors()); // 全てのリクエストを許可
-app.use(express.json()); // ミドルウェア
-
-// MySQL接続設定
-const connection = mysql.createConnection({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-});
-
-// MySQL接続
-connection.connect((err) => {
-  if (err) {
-    console.error('MySQL接続エラー:', err);
-    return;
-  }
-  console.log('MySQLに接続しました');
-});
 
 
 // ログインが必要なエンドポイント用のミドルウェア
@@ -123,25 +130,24 @@ app.post('/saveOrUpdate', (req, res) => {
     diary = VALUES(diary);
   `;
 
-  connection.query(query, [formattedDate, value, mood, diary], (err, result) => {
-    if (err) {
-      console.error('データベースエラー:', err);
-      res.status(500).json({ error: 'データベースエラー', message: err.message });
-    } else {
-      res.json({ message: 'データが保存または更新されました', result });
-    }
-  });
+  try {
+    const [result] = await db.query(query, [formattedDate, value, mood, diary]);
+    res.json({ message: 'データが保存または更新されました', result });
+  } catch (error) {
+    console.error('データベースエラー:', error);
+    res.status(500).json({ error: 'データベースエラー', message: error.message });
+  }
 });
 
 // データ取得エンドポイント
-app.get('/getData', isAuthenticated, (req, res) => {
-  connection.query('SELECT * FROM sleep_info ORDER BY date ASC', (err, results) => {
-    if (err) {
-      res.status(500).json({ error: 'データ取得エラー' });
-    } else {
-      res.json(results); // データをJSON形式で返す
-    }
-  });
+app.get('/getData', isAuthenticated, async (req, res) => {
+  try {
+    const [results] = await db.query('SELECT * FROM sleep_info ORDER BY date ASC');
+    res.json(results);
+  } catch (error) {
+    console.error('データ取得エラー:', error);
+    res.status(500).json({ error: 'データ取得エラー', message: error.message });
+  }
 });
 
 // サーバーを起動

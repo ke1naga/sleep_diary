@@ -1,4 +1,4 @@
-const base_url = 'http://192.168.10.112:3000';
+const base_url = 'https://ke1naga.github.io/sleep_diary';
 
 document.getElementById('dataForm').addEventListener('submit', function (event) {
     event.preventDefault(); // フォーム送信を防ぐ
