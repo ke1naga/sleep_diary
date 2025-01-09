@@ -1,4 +1,4 @@
-const base_url = 'https://sleep-diary.vercel.app/api';
+const base_url = 'https://sleep-diary-g9wa.onrender.com';
 
 document.getElementById('dataForm').addEventListener('submit', function (event) {
     event.preventDefault(); // フォーム送信を防ぐ
