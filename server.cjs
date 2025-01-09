@@ -73,7 +73,7 @@ app.post('/login', (req, res) => {
   // 簡易的なログイン認証（ユーザー名とパスワードを確認）
   if (username === 'kei' && password === 'keikei') {
     req.session.loggedIn = true; // ログイン成功時にセッションにフラグをセット
-    res.redirect('/index.html'); // ログイン後、トップページにリダイレクト
+    res.redirect('/graph.html'); // ログイン後、トップページにリダイレクト
   } else {
     res.send('ユーザー名またはパスワードが間違っています');
   }
