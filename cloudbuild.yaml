@@ -1,0 +1,17 @@
+steps:
+  - name: 'gcr.io/cloud-builders/npm'
+    args: ['install']
+
+  - name: 'gcr.io/cloud-builders/npm'
+    args: ['run', 'build']
+
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args: ['run', 'deploy', 'sleep-diary',
+           '--image', 'gcr.io/$PROJECT_ID/sleep-diary_image',
+           '--region', 'us-central1',
+           '--platform', 'managed',
+           '--allow-unauthenticated',
+          '--update-secrets', 'DB_PASSWORD=projects/$PROJECT_ID/secrets/DB_PASSWORD:latest']
+images:
+  - 'gcr.io/$PROJECT_ID/sleep-diary_image'
+timeout: '900s'
