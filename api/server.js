@@ -8,22 +8,17 @@ const cors = require('cors');
 
 require('dotenv').config();  // dotenvを読み込む
 
-// データベース接続プールを設定
-const db = mysql.createPool({
+const connection = mysql.createConnection({
   host: process.env.DB_HOST,
-  port: process.env.DB_PORT,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0,
+  database: process.env.DB_NAME
 });
 
 // 非同期接続テスト
 async function testConnection() {
   try {
-    const [rows] = await db.query('SELECT 1');
+    const [rows] = await connection.query('SELECT 1');
     console.log('データベース接続成功:', rows);
   } catch (error) {
     console.error('データベース接続エラー:', error);
@@ -131,7 +126,7 @@ app.post('/saveOrUpdate', async(req, res) => {
   `;
 
   try {
-    const [result] = await db.query(query, [formattedDate, value, mood, diary]);
+    const [result] = await connection.query(query, [formattedDate, value, mood, diary]);
     res.json({ message: 'データが保存または更新されました', result });
   } catch (error) {
     console.error('データベースエラー:', error);
