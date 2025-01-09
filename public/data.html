@@ -50,11 +50,11 @@
 
         <script>
             //YYY-MM-DD
-
+            const base_url = 'https://sleep-diary.vercel.app/api';
 
           // データを取得してテーブルに表示
           window.onload = function() {
-            fetch('http://192.168.10.112:3000/getData')
+            fetch(`${base_url}/getData`)
               .then(response => response.json())
               .then(data => {
                 const tableBody = document.getElementById('dataTable').getElementsByTagName('tbody')[0];
