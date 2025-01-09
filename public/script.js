@@ -145,6 +145,7 @@ function drawGraph(dates, values, values2) {
         },
         options: {
             responsive: true,
+            maintainAspectRatio: false,
             scales: {
                 x: {
                     type: 'time',

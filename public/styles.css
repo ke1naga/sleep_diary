@@ -75,7 +75,9 @@ button:hover {
     background-color: #52f1ff;
 }
 
-canvas {
+#lineChart {
+    width: 100%; /* 親要素に応じて幅を調整 */
+    max-height: 50vh; 
     border: 1px solid #ccc;
     box-shadow: 0.1rem 0.1rem 0.1rem 0.1rem grey;
 }
@@ -103,6 +105,11 @@ form{
 
 .int{
     width:30%;
+}
+
+#lineChart {
+    width: 100%; /* 親要素に応じて幅を調整 */
+    max-height: 40vh; 
 }
 
 }
