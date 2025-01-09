@@ -1,4 +1,4 @@
-const base_url = 'https://sleep-diary-g9wa.onrender.com';
+const base_url = 'https://sleep-diary-5uzz.onrender.com';
 
 document.getElementById('dataForm').addEventListener('submit', function (event) {
     event.preventDefault(); // フォーム送信を防ぐ
