@@ -8,7 +8,7 @@ const cors = require('cors');
 
 require('dotenv').config();  // dotenvを読み込む
 
-const connection = mysql.createConnection({
+const connection = mysql.createPool({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
@@ -137,7 +137,7 @@ app.post('/saveOrUpdate', async(req, res) => {
 // データ取得エンドポイント
 app.get('/getData', isAuthenticated, async (req, res) => {
   try {
-    const [results] = await db.query('SELECT * FROM sleep_info ORDER BY date ASC');
+    const [results] = await connection.query('SELECT * FROM sleep_info ORDER BY date ASC');
     res.json(results);
   } catch (error) {
     console.error('データ取得エラー:', error);
