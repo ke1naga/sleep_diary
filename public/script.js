@@ -52,6 +52,7 @@ document.getElementById('dataForm').addEventListener('submit', function (event) 
         // 既存のデータに新しいデータを追加
         console.log(dates, values, values2, diaries); // データが正しく渡されているか確認
         drawGraph(dates, values, values2);  // 新しいデータでグラフ更新
+        window.location.href = '/graph.html';
     })
     .catch(error => {
         console.error('保存エラー:', error);  // エラー処理
