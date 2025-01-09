@@ -40,7 +40,7 @@
   </header>
 
   <main>
-    <h2>日付と数値の入力</h2>
+    <h2>日付と数値と日記の入力</h2>
 
     <!-- 日付と数値入力フォーム -->
     <form class="data" id="dataForm">
@@ -50,11 +50,11 @@
       </div>
       <div>
       <label for="value">睡眠時間:</label>
-      <input class="int" type="number" id="value" name="sleep_hours" required>
+      <input class="int" type="number" id="value" name="sleep_hours" step="0.5" min="0" max="24" required>
       </div>
       <div>
       <label for="mood">気分スコア:</label>
-      <input class="int" type="number" id="mood" name="mood" required>
+      <input class="int" type="number" id="mood" name="mood" min="0" max="10" required>
       </div>
       <div>
         <label for="diary">日記:</label>
