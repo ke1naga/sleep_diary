@@ -75,7 +75,6 @@ button {
     color: white;
     cursor: pointer;
     border-radius: 8px;
-    margin-left: 1rem;
 }
 
 button:hover {
@@ -110,8 +109,15 @@ form{
     flex-direction: column;    
 }
 
+.data div{
+    padding:0.1rem;
+    border:0.1rem solid #006783;
+    margin:0.05rem;
+}
+
+
 .int{
-    width:80%;
+    width:100%;
 }
 
 #lineChart {
