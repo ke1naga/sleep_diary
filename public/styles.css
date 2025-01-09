@@ -52,6 +52,12 @@ main{
     display:flex;
 }
 
+.data div{
+    padding:0.1rem;
+    border:0.1rem solid #006783;
+    margin:0.1rem;
+}
+
 .int{
     width:5rem;
     margin:0;
