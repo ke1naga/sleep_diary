@@ -1,0 +1,35 @@
+{
+    "version": 2,
+    "builds": [
+      {
+        "src": "server.js",  
+        "use": "@vercel/node"  
+      },
+      {
+        "src": "public/**/*",  
+        "use": "@vercel/static" 
+      }
+    ],
+    "routes": [
+      {
+        "src": "/api/(.*)",  
+        "dest": "/api/$1"    
+      },
+      {
+        "src": "/(.*)",       
+        "dest": "/public/$1" 
+      }
+    ],
+    "env": {
+      "DB_HOST": "34.57.47.41",
+      "DB_USER": "root",
+      "DB_PASSWORD": "Q@p@a@l@z@m@13579",
+      "DB_NAME": "sleep_data"
+    },
+    "build": {
+      "env": {
+        "NODE_ENV": "production"  
+      }
+    }
+  }
+  
