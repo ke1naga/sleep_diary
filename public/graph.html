@@ -44,21 +44,21 @@
 
     <!-- 日付と数値入力フォーム -->
     <form class="data" id="dataForm">
-      <div>
+      <div onclick="focusTextarea()">
       <label for="date">日付:</label>
-      <input type="date" id="date" name="date" required>
+      <input id="expandableTextarea" type="date" id="date" name="date" required>
       </div>
-      <div>
+      <div onclick="focusTextarea()">
       <label for="value">睡眠時間:</label>
-      <input class="int" type="number" id="value" name="sleep_hours" step="0.5" min="0" max="24" required>
+      <input id="expandableTextarea" class="int" type="number" id="value" name="sleep_hours" step="0.5" min="0" max="24" required>
       </div>
-      <div>
+      <div onclick="focusTextarea()">
       <label for="mood">気分スコア:</label>
-      <input class="int" type="number" id="mood" name="mood" min="0" max="10" required>
+      <input id="expandableTextarea" class="int" type="number" id="mood" name="mood" min="0" max="10" required>
       </div>
-      <div>
+      <div onclick="focusTextarea()">
         <label for="diary">日記:</label>
-        <textarea class="diary" id="diary"></textarea>
+        <textarea id="expandableTextarea" class="diary" id="diary"></textarea>
       </div>
       <button type="submit">保存</button>
     </form>
@@ -67,6 +67,13 @@
     <canvas id="lineChart"></canvas>
 
     <script src="script.js" defer></script>
+
+    <script>
+      // 入力エリアにフォーカスを当てる関数
+      function focusTextarea() {
+          document.getElementById('expandableTextarea').focus();
+      }
+  </script>
   </main>
 
   <footer>
