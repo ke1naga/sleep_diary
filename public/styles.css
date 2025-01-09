@@ -55,7 +55,7 @@ main{
 .data div{
     padding:0.1rem;
     border:0.1rem solid #006783;
-    margin:0.1rem;
+    margin:0.2rem 0.1rem 1rem 0.1rem;
 }
 
 .int{
@@ -68,13 +68,14 @@ main{
 }
 
 button {
-    padding:0.3rem 1rem;
+    padding:0.1rem 1rem;
     font-size: 1rem;
     border: none;
     background-color: #4c9daf;
     color: white;
     cursor: pointer;
-    border-radius: 2rem;
+    border-radius: 8px;
+    margin-left: 1rem;
 }
 
 button:hover {
@@ -83,7 +84,7 @@ button:hover {
 
 #lineChart {
     width: 100%; /* 親要素に応じて幅を調整 */
-    max-height: 50vh; 
+    max-height: 70vh; 
     border: 1px solid #ccc;
     box-shadow: 0.1rem 0.1rem 0.1rem 0.1rem grey;
 }
@@ -110,7 +111,7 @@ form{
 }
 
 .int{
-    width:30%;
+    width:80%;
 }
 
 #lineChart {
