@@ -60,6 +60,7 @@
   // ページロード時の処理
   window.onload = function () {
     const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
     const formattedYesterday = yesterday.toISOString().split('T')[0]; // 昨日の日付を 'YYYY-MM-DD'形式にフォーマット
     document.getElementById('datePicker').value = formattedYesterday; // カレンダーに昨日の日付を設定
     fetchDataInRange(formattedYesterday); // 昨日を中心にデータを取得
