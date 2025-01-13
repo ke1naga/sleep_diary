@@ -93,7 +93,6 @@ document.getElementById('date').addEventListener('change', function () {
         })
         .catch(error => {
             console.error('エラー:', error);
-            alert('日付のデータ取得に失敗しました');
         });
 });
 
