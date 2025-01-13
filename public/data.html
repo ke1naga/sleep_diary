@@ -58,12 +58,12 @@
   const base_url = 'https://sleep-diary-5uzz.onrender.com';
 
   // ページロード時の処理
+
   window.onload = function () {
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
-    const formattedYesterday = yesterday.toISOString().split('T')[0]; // 昨日の日付を 'YYYY-MM-DD'形式にフォーマット
-    document.getElementById('datePicker').value = formattedYesterday; // カレンダーに昨日の日付を設定
-    fetchDataInRange(formattedYesterday); // 昨日を中心にデータを取得
+    const today = new Date();
+    const formattedToday = today.toISOString().split('T')[0]; // 今日の日付を 'YYYY-MM-DD'形式にフォーマット
+    document.getElementById('datePicker').value = formattedToday; // カレンダーに今日の日付を設定
+    fetchDataInRange(formattedToday); // 昨日を中心にデータを取得
   };
 
   // カレンダー選択時のデータ取得
@@ -76,7 +76,12 @@
       return;
     }
 
-    fetch(`${base_url}/getDataInRange?date=${selectedDate}`, {
+    fetchDataInRange(selectedDate); // 日付に基づいてデータを取得
+  });
+
+  //データを取得する関数
+  function fetchDataInRange(date){
+    fetch(`${base_url}/getDataInRange?date=${date}`, {
       method: 'GET',
       credentials: 'include', // セッション情報を含む
     })
@@ -94,7 +99,7 @@
         console.error('エラー:', error);
         alert('データ取得エラー');
       });
-  });
+  }
 
   // テーブルを更新する関数
   function updateTable(data) {
