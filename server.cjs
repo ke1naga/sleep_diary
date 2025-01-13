@@ -145,6 +145,33 @@ app.get('/getData', isAuthenticated, async (req, res) => {
   }
 });
 
+// 日付を基準にデータを取得するエンドポイント
+app.get('/getDataByDate', isAuthenticated, async (req, res) => {
+  const { date } = req.query;
+
+  if (!date || !isValidDate(date)) {
+    return res.status(400).json({ error: '無効な日付形式です' });
+  }
+
+  // 日付をフォーマットして統一
+  const formattedDate = format(parseISO(date), 'yyyy-MM-dd');
+
+  try {
+    const query = 'SELECT * FROM sleep_info WHERE date = ?';
+    const [results] = await connection.query(query, [formattedDate]);
+
+    if (results.length === 0) {
+      return res.status(404).json({ error: '指定された日付のデータは存在しません' });
+    }
+
+    res.json(results[0]); // 見つかったデータを返す
+  } catch (error) {
+    console.error('データ取得エラー:', error);
+    res.status(500).json({ error: 'データ取得エラー', message: error.message });
+  }
+});
+
+
 // サーバーを起動
 app.listen(port, '0.0.0.0', () => {
   console.log(`http://0.0.0.0:${port}で動いでます`);

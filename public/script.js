@@ -60,6 +60,43 @@ document.getElementById('dataForm').addEventListener('submit', function (event) 
     });
 });
 
+// 日付が変更されたときに該当データを取得してフォームにセット
+document.getElementById('date').addEventListener('change', function () {
+    const dateInput = this.value; // 入力された日付
+    const date = new Date(dateInput);
+    const formattedDate = date.toISOString().split('T')[0]; // YYYY-MM-DD形式に変換
+
+    console.log('選択された日付:', formattedDate);
+
+    // サーバーから該当するデータを取得
+    fetch(`${base_url}/getDataByDate?date=${formattedDate}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('データ取得エラー');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('取得したデータ:', data);
+
+            if (data) {
+                // 取得したデータを入力欄にセット
+                document.getElementById('value').value = data.value || '';
+                document.getElementById('mood').value = data.mood || '';
+                document.getElementById('diary').value = data.diary || '';
+            } else {
+                // データがない場合は空欄にリセット
+                document.getElementById('value').value = '';
+                document.getElementById('mood').value = '';
+                document.getElementById('diary').value = '';
+            }
+        })
+        .catch(error => {
+            console.error('エラー:', error);
+            alert('日付のデータ取得に失敗しました');
+        });
+});
+
 // 初期のデータを保持
 let dates = [];
 let values = [];
