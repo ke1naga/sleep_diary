@@ -214,6 +214,68 @@ function drawGraph(dates, values, values2) {
     });
 }
 
+    // 範囲選択のイベントリスナー
+    document.getElementById('dateRangeSelector').addEventListener('change', function () {
+        const selectedRange = this.value;
+        const today = new Date();
+        let startDate;
+      
+        // 範囲に応じて開始日を計算
+        switch (selectedRange) {
+          case 'all':
+            startDate = new Date(today.setFullYear(today.getFullYear())- 100); 
+            break;
+          case '10y':
+            startDate = new Date(today.setFullYear(today.getFullYear() - 10));  // 10年分
+            break;
+          case '5y':
+            startDate = new Date(today.setFullYear(today.getFullYear() - 5));  // 5年分
+            break;
+          case '3y':
+            startDate = new Date(today.setFullYear(today.getFullYear() - 3));  // 3年分
+            break;
+          case '1y':
+            startDate = new Date(today.setFullYear(today.getFullYear() - 1));  // 1年分
+            break;
+          case '6m':
+            startDate = new Date(today.setMonth(today.getMonth() - 6));  // 6ヶ月分
+            break;
+          case '3m':
+            startDate = new Date(today.setMonth(today.getMonth() - 3));  // 3ヶ月分
+            break;
+          case '1m':
+            startDate = new Date(today.setMonth(today.getMonth() - 1));  // 1ヶ月分
+            break;
+        }
+      
+        // 開始日をISO形式（YYYY-MM-DD）に変換
+        const formattedStartDate = startDate.toISOString().split('T')[0];
+        const formattedEndDate = new Date().toISOString().split('T')[0];  // 今日の日付
+      
+        console.log(`表示範囲: ${formattedStartDate} 〜 ${formattedEndDate}`);
+      
+        // データを取得
+        fetchDataInRange(formattedStartDate, formattedEndDate);
+      });
+      
+      // データ取得関数
+      function fetchDataInRange(startDate, endDate) {
+        fetch(`${base_url}/getDataInRange?start=${startDate}&end=${endDate}`, {
+          method: 'GET',
+          credentials: 'include',
+        })
+          .then(response => response.json())
+          .then(data => {
+            console.log('取得したデータ:', data);
+            updateChart(data); // グラフを更新
+          })
+          .catch(error => {
+            console.error('エラー:', error);
+            alert('データ取得エラー');
+          });
+      }
+      
+
 // グラフ更新関数
 function updateChart(data) {
     const dates = [];
