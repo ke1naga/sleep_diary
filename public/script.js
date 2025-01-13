@@ -213,7 +213,7 @@ function drawGraph(dates, values, values2) {
     });
 }
 
-    // 範囲選択のイベントリスナー
+    // 範囲選択のイベントリスナー----------------------------------------
     document.getElementById('dateRangeSelector').addEventListener('change', function () {
         const selectedRange = this.value;
         const today = new Date();
@@ -222,28 +222,36 @@ function drawGraph(dates, values, values2) {
         // 範囲に応じて開始日を計算
         switch (selectedRange) {
           case 'all':
-            startDate = new Date(today.setFullYear(today.getFullYear())- 100); 
+            startDate = new Date(today);
+            startDate.setFullYear(today.getFullYear()- 100); 
             break;
           case '10y':
-            startDate = new Date(today.setFullYear(today.getFullYear() - 10));  // 10年分
+            startDate = new Date(today)
+            startDate.setFullYear(today.getFullYear() - 10);  // 10年分
             break;
           case '5y':
-            startDate = new Date(today.setFullYear(today.getFullYear() - 5));  // 5年分
+            startDate = new Date(today)
+            startDate.setFullYear(today.getFullYear() - 5);  // 5年分
             break;
           case '3y':
-            startDate = new Date(today.setFullYear(today.getFullYear() - 3));  // 3年分
+            startDate = new Date(today)
+            startDate.setFullYear(today.getFullYear() - 3);  // 3年分
             break;
           case '1y':
-            startDate = new Date(today.setFullYear(today.getFullYear() - 1));  // 1年分
+            startDate = new Date(today)
+            startDate.setFullYear(today.getFullYear() - 1);  // 1年分
             break;
           case '6m':
-            startDate = new Date(today.setMonth(today.getMonth() - 6));  // 6ヶ月分
+            startDate = new Date(today)
+            startDate.setMonth(today.getMonth() - 6);  // 6ヶ月分
             break;
           case '3m':
-            startDate = new Date(today.setMonth(today.getMonth() - 3));  // 3ヶ月分
+            startDate = new Date(today)
+            startDate.setMonth(today.getMonth() - 3);  // 3ヶ月分
             break;
           case '1m':
-            startDate = new Date(today.setMonth(today.getMonth() - 1));  // 1ヶ月分
+            startDate = new Date(today)
+            startDate.setMonth(today.getMonth() - 1);  // 1ヶ月分
             break;
         }
       
