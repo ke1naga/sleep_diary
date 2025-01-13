@@ -172,7 +172,7 @@ app.get('/getDataByDate', isAuthenticated, async (req, res) => {
   }
 });
 
-// 前後15日分のデータを取得するエンドポイント
+// 前後30日分のデータを取得するエンドポイント
 app.get('/getDataInRange', isAuthenticated, async (req, res) => {
   const { date } = req.query;
 
@@ -182,8 +182,8 @@ app.get('/getDataInRange', isAuthenticated, async (req, res) => {
 
   // 日付をフォーマットして基準日を設定
   const baseDate = parseISO(date);
-  const startDate = format(new Date(baseDate.getTime() - 15 * 24 * 60 * 60 * 1000), 'yyyy-MM-dd'); // 基準日の15日前
-  const endDate = format(new Date(baseDate.getTime() + 15 * 24 * 60 * 60 * 1000), 'yyyy-MM-dd');   // 基準日の15日後
+  const startDate = format(new Date(baseDate.getTime() - 30 * 24 * 60 * 60 * 1000), 'yyyy-MM-dd'); // 基準日の30日前
+  const endDate = format(new Date(baseDate.getTime() + 30 * 24 * 60 * 60 * 1000), 'yyyy-MM-dd');   // 基準日の30日後
 
   try {
     const query = 'SELECT * FROM sleep_info WHERE date BETWEEN ? AND ? ORDER BY date ASC';
