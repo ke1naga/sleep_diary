@@ -145,6 +145,7 @@ app.get('/getData', isAuthenticated, async (req, res) => {
   }
 });
 
+
 // 日付を基準にデータを取得するエンドポイント
 app.get('/getDataByDate', isAuthenticated, async (req, res) => {
   const { date } = req.query;
@@ -170,6 +171,31 @@ app.get('/getDataByDate', isAuthenticated, async (req, res) => {
     res.status(500).json({ error: 'データ取得エラー', message: error.message });
   }
 });
+
+// 前後15日分のデータを取得するエンドポイント
+app.get('/getDataInRange', isAuthenticated, async (req, res) => {
+  const { date } = req.query;
+
+  if (!date || !isValidDate(date)) {
+    return res.status(400).json({ error: '無効な日付形式です' });
+  }
+
+  // 日付をフォーマットして基準日を設定
+  const baseDate = parseISO(date);
+  const startDate = format(new Date(baseDate.getTime() - 15 * 24 * 60 * 60 * 1000), 'yyyy-MM-dd'); // 基準日の15日前
+  const endDate = format(new Date(baseDate.getTime() + 15 * 24 * 60 * 60 * 1000), 'yyyy-MM-dd');   // 基準日の15日後
+
+  try {
+    const query = 'SELECT * FROM sleep_info WHERE date BETWEEN ? AND ? ORDER BY date ASC';
+    const [results] = await connection.query(query, [startDate, endDate]);
+
+    res.json(results); // 前後15日間のデータを返す
+  } catch (error) {
+    console.error('データ取得エラー:', error);
+    res.status(500).json({ error: 'データ取得エラー', message: error.message });
+  }
+});
+
 
 
 // サーバーを起動
