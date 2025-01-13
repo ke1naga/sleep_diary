@@ -213,3 +213,24 @@ function drawGraph(dates, values, values2) {
         }
     });
 }
+
+// グラフ更新関数
+function updateChart(data) {
+    const dates = [];
+    const values = [];
+    const values2 = [];
+  
+    // データを整理してグラフに表示する形式に整える
+    data.forEach(row => {
+      const utcDate = new Date(row.date);
+      const jstDate = new Date(utcDate.getTime() + 9 * 60 * 60 * 1000); // UTC → JST (+9時間)
+      const formattedDate = jstDate.toISOString().split('T')[0];  // YYYY-MM-DD
+  
+      dates.push(formattedDate);
+      values.push(row.value);
+      values2.push(row.mood);
+    });
+  
+    drawGraph(dates, values, values2);  // グラフを更新
+  }
+  
