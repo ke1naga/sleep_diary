@@ -3,6 +3,7 @@ const mysql = require('mysql2/promise');
 const session = require('express-session'); // セッションを使うために追加
 const app = express();
 const port = 3000;
+const bcrypt = require('bcrypt');
 
 const cors = require('cors');
 
@@ -38,7 +39,7 @@ app.use(express.json()); // JSON
 
 // セッション設定
 app.use(session({
-  secret: 'keikei',  // セッションの暗号化キー
+  secret: process.env.SESSION_SECRET,  // セッションの暗号化キー
   resave: false,
   saveUninitialized: true
 }));
@@ -66,18 +67,44 @@ app.get('/login', (req, res) => {
   `);
 });
 
-// ログイン処理
-app.post('/login', (req, res) => {
+app.post('/login', async (req, res) => {
   const { username, password } = req.body;
 
-  // 簡易的なログイン認証（ユーザー名とパスワードを確認）
-  if (username === 'kei' && password === 'keikei') {
-    req.session.loggedIn = true; // ログイン成功時にセッションにフラグをセット
-    res.redirect('/graph.html'); // ログイン後、トップページにリダイレクト
-  } else {
-    res.send('ユーザー名またはパスワードが間違っています');
+  if (!username || !password) {
+    return res.status(400).json({ error: 'ユーザー名とパスワードは必須です' });
+  }
+
+  try {
+    // データベースからユーザー情報を取得
+    const query = 'SELECT * FROM users WHERE username = ?';
+    const [rows] = await connection.query(query, [username]);
+
+    if (rows.length === 0) {
+      return res.status(404).json({ error: 'ユーザーが見つかりません' });
+    }
+
+    const user = rows[0];
+
+    // パスワードを比較
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (!isMatch) {
+      return res.status(401).json({ error: 'パスワードが一致しません' });
+    }
+
+    // セッションにログイン状態とユーザー情報を保存
+    req.session.loggedIn = true;
+    req.session.userId = user.id;
+    req.session.username = user.username;
+
+    // ログイン成功後に /graph.html にリダイレクト
+    res.redirect('/graph.html');
+  } catch (error) {
+    console.error('エラー:', error);
+    res.status(500).json({ error: 'ログインに失敗しました', message: error.message });
   }
 });
+
 
 // ログアウト処理
 app.get('/logout', (req, res) => {
@@ -197,23 +224,27 @@ app.get('/getDataInRange', isAuthenticated, async (req, res) => {
 });
 
 //グラフの期間指定
-app.get('/getDataInRange2', (req, res) => {
+app.get('/getDataInRange2', async(req, res) => {
   const { start, end } = req.query; // クエリパラメータから範囲を取得
 
   // 日付のバリデーション
   if (!start || !end) {
       return res.status(400).json({ error: '開始日または終了日が指定されていません' });
   }
+  
+  const query =`
+  SELECT * FROM sleep_info
+  WHERE date BETWEEN ? AND ?
+  `;
 
-  // 日付範囲でデータをフィルタリング
-  const filteredData = sleepData.filter(entry => {
-      const entryDate = new Date(entry.date);
-      return entryDate >= new Date(start) && entryDate <= new Date(end);
-  });
-
-  res.json(filteredData); // フィルタリングしたデータを返す
+  try {
+    const [result] = await connection.execute(query, [start, end]);
+    res.json(result); // フィルタリングしたデータを返す
+  } catch (err) {
+    console.error('データ取得エラー:', err);
+    res.status(500).json({ error: 'データ取得エラー' });
+  }
 });
-
 
 
 // サーバーを起動
