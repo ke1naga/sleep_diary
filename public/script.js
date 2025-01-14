@@ -262,12 +262,12 @@ function drawGraph(dates, values, values2) {
         console.log(`表示範囲: ${formattedStartDate} 〜 ${formattedEndDate}`);
       
         // データを取得
-        fetchDataInRange(formattedStartDate, formattedEndDate);
+        fetchDataInRange2(formattedStartDate, formattedEndDate);
       });
       
       // データ取得関数
-      function fetchDataInRange(startDate, endDate) {
-        fetch(`${base_url}/getDataInRange?start=${startDate}&end=${endDate}`, {
+      function fetchDataInRange2(startDate, endDate) {
+        fetch(`${base_url}/getDataInRange2?start=${startDate}&end=${endDate}`, {
           method: 'GET',
           credentials: 'include',
         })

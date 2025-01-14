@@ -196,6 +196,24 @@ app.get('/getDataInRange', isAuthenticated, async (req, res) => {
   }
 });
 
+//グラフの期間指定
+app.get('/getDataInRange2', (req, res) => {
+  const { start, end } = req.query; // クエリパラメータから範囲を取得
+
+  // 日付のバリデーション
+  if (!start || !end) {
+      return res.status(400).json({ error: '開始日または終了日が指定されていません' });
+  }
+
+  // 日付範囲でデータをフィルタリング
+  const filteredData = sleepData.filter(entry => {
+      const entryDate = new Date(entry.date);
+      return entryDate >= new Date(start) && entryDate <= new Date(end);
+  });
+
+  res.json(filteredData); // フィルタリングしたデータを返す
+});
+
 
 
 // サーバーを起動
