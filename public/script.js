@@ -213,18 +213,15 @@ function drawGraph(dates, values, values2) {
     });
 }
 
-    // 範囲選択のイベントリスナー----------------------------------------
+    // 範囲選択----------------------------------------
     document.getElementById('dateRangeSelector').addEventListener('change', function () {
         const selectedRange = this.value;
+
         const today = new Date();
         let startDate;
       
         // 範囲に応じて開始日を計算
         switch (selectedRange) {
-          case 'all':
-            startDate = new Date(today);
-            startDate.setFullYear(today.getFullYear()- 100); 
-            break;
           case '10y':
             startDate = new Date(today)
             startDate.setFullYear(today.getFullYear() - 10);  // 10年分
@@ -253,6 +250,12 @@ function drawGraph(dates, values, values2) {
             startDate = new Date(today)
             startDate.setMonth(today.getMonth() - 1);  // 1ヶ月分
             break;
+        　case 'all':
+            startDate= new Date(0);
+            break;
+          default:
+            startDate = new Date(today)
+            startDate.setMonth(today.getMonth() - 3);  // 3ヶ月分
         }
       
         // 開始日をISO形式（YYYY-MM-DD）に変換
