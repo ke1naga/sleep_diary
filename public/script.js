@@ -299,6 +299,11 @@ function updateChart(data) {
       values.push(row.value);
       values2.push(row.mood);
     });
+
+       // グラフを描画前に既存のグラフインスタンスをリセット
+       if (chartInstance) {
+        chartInstance.destroy();  // 既存のチャートを破棄
+    }
   
     drawGraph(dates, values, values2);  // グラフを更新
   }
