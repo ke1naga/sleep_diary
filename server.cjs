@@ -3,7 +3,7 @@ const mysql = require('mysql2/promise');
 const session = require('express-session'); // セッションを使うために追加
 const app = express();
 const port = 3000;
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
 const cors = require('cors');
 
