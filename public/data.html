@@ -130,7 +130,11 @@
       dateCell.textContent = formattedDate; // 日付を設定
       valueCell.textContent = row.value; // 睡眠時間を設定
       moodCell.textContent = row.mood; // 気分スコアを設定
-      diaryCell.textContent = row.diary; // 日記を設定
+
+      // 日記内容に改行を含めるために、<pre>タグや改行を反映
+    const formattedDiary = row.diary.replace(/\n/g, '<br>'); // 改行を <br> に変換
+    diaryCell.innerHTML = formattedDiary; // 日記内容をHTMLとして挿入
+    diaryCell.style.whiteSpace = 'pre-line'; // スペースや改行を反映
     });
   }
 
