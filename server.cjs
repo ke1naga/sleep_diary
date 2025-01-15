@@ -147,18 +147,19 @@ app.post('/saveOrUpdate', isAuthenticated, async(req, res) => {
   console.log(formattedDate);  // 例: '2025-01-09'
   
   const query = `
-    INSERT INTO sleep_info (date, value, mood, diary)
-    VALUES (?, ?, ?, ?)
+    INSERT INTO sleep_info (date, value, mood, diary, user_id)
+    VALUES (?, ?, ?, ?, ?)
     ON DUPLICATE KEY UPDATE
     value = VALUES(value),
     mood = VALUES(mood),
     diary = VALUES(diary);
   `;
 
+  const userId = req.session.userId;
+
   let connection;
   try {
-    connection = await connection.getConnection(); // 接続を取得
-    const [result] = await connection.query(query, [formattedDate, value, mood, diary]);
+    const [result] = await connection.query(query, [formattedDate, value, mood, diary, userId]);
     res.json({ message: 'データが保存または更新されました', result });
   } catch (error) {
     console.error('データベースエラー:', error);
