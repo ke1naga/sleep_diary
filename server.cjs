@@ -160,12 +160,11 @@ app.post('/saveOrUpdate', isAuthenticated, async(req, res) => {
   let connection;
   try {
     const [result] = await connection.query(query, [formattedDate, value, mood, diary, userId]);
+    console.log('データ保存または更新成功:', result);
     res.json({ message: 'データが保存または更新されました', result });
   } catch (error) {
     console.error('データベースエラー:', error);
     res.status(500).json({ error: 'データベースエラー', message: error.message });
-  }finally{
-    if (connection) connection.release(); // 接続を解放
   }
 });
 
