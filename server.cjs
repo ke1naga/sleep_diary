@@ -41,7 +41,12 @@ app.use(express.json()); // JSON
 app.use(session({
   secret: process.env.SESSION_SECRET,  // セッションの暗号化キー
   resave: false,
-  saveUninitialized: true
+  saveUninitialized: true,
+  cookie: {
+    httpOnly: true,  // クッキーをJavaScriptでアクセス不可に
+    secure: process.env.NODE_ENV==='production', 
+    maxAge: 3600000 // セッションの有効期限を1時間に設定
+  }
 }));
 
 
@@ -125,7 +130,7 @@ function isValidDate(dateString) {
 }
 
 // データの追加または上書きエンドポイント
-app.post('/saveOrUpdate', async(req, res) => {
+app.post('/saveOrUpdate', isAuthenticated, async(req, res) => {
   const { date, value, mood, diary } = req.body;
 
   console.log('受け取ったデータ:', { date, value, mood, diary });  // ここで確認
@@ -152,12 +157,16 @@ app.post('/saveOrUpdate', async(req, res) => {
     diary = VALUES(diary);
   `;
 
+  let connection;
   try {
+    connection = await connection.getConnection(); // 接続を取得
     const [result] = await connection.query(query, [formattedDate, value, mood, diary]);
     res.json({ message: 'データが保存または更新されました', result });
   } catch (error) {
     console.error('データベースエラー:', error);
     res.status(500).json({ error: 'データベースエラー', message: error.message });
+  }finally{
+    if (connection) connection.release(); // 接続を解放
   }
 });
 
@@ -184,8 +193,10 @@ app.get('/getDataByDate', isAuthenticated, async (req, res) => {
   // 日付をフォーマットして統一
   const formattedDate = format(parseISO(date), 'yyyy-MM-dd');
 
+  let connection;
   try {
     const query = 'SELECT * FROM sleep_info WHERE date = ?';
+    connection = await connection.getConnection(); // 接続を取得
     const [results] = await connection.query(query, [formattedDate]);
 
     if (results.length === 0) {
@@ -196,6 +207,8 @@ app.get('/getDataByDate', isAuthenticated, async (req, res) => {
   } catch (error) {
     console.error('データ取得エラー:', error);
     res.status(500).json({ error: 'データ取得エラー', message: error.message });
+  }finally{
+    if (connection) connection.release(); // 接続を解放
   }
 });
 
@@ -252,3 +265,13 @@ app.listen(port, '0.0.0.0', () => {
   console.log(`http://0.0.0.0:${port}で動いでます`);
 });
 
+process.on('SIGINT', async () => {
+  try {
+    await connection.end(); // プール内のすべての接続を解放
+    console.log('コネクションプールを閉じました');
+    process.exit(0);
+  } catch (err) {
+    console.error('プール終了エラー:', err);
+    process.exit(1);
+  }
+});
