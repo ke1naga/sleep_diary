@@ -72,8 +72,8 @@ main{
     textarea.diary.expanded {
         min-height: 200px; /* 高さを拡大 */
         border: 1px solid #207ee1; /* フォーカス時のボーダーカラー */
-        background-color: #fff; /* 背景色を白く */
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* 少し影をつける */
+        background-color: #ffffff; /* 背景色を白く */
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3); /* 少し影をつける */
       }
 
 button {
