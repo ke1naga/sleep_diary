@@ -43,8 +43,6 @@ app.use(session({
   resave: false,
   saveUninitialized: true,
   cookie: {
-    httpOnly: true,  // クッキーをJavaScriptでアクセス不可に
-    secure: process.env.NODE_ENV==='production', 
     maxAge: 3600000 // セッションの有効期限を1時間に設定
   }
 }));
