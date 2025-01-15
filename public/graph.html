@@ -88,6 +88,19 @@
           textarea.focus();
          }
       }
+
+      // 日記入力欄の focus と blur イベントを追加
+      const diaryTextarea = document.getElementById('diary');
+
+      // フォーカス時にテキストエリアを拡大
+      diaryTextarea.addEventListener('focus', function () {
+        diaryTextarea.classList.add('expanded');
+      });
+
+      // フォーカスアウト時に元のサイズに戻す
+      diaryTextarea.addEventListener('blur', function () {
+        diaryTextarea.classList.remove('expanded');
+      });
   </script>
 
   </main>

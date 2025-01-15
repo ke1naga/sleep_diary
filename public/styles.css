@@ -68,6 +68,14 @@ main{
     width:20rem;
 }
 
+    /* 入力中に大きくなるスタイル */
+    textarea.diary.expanded {
+        min-height: 200px; /* 高さを拡大 */
+        border: 1px solid #207ee1; /* フォーカス時のボーダーカラー */
+        background-color: #fff; /* 背景色を白く */
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* 少し影をつける */
+      }
+
 button {
     padding:0.1rem 1rem;
     font-size: 1rem;
