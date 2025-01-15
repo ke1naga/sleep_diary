@@ -203,8 +203,6 @@ app.get('/getDataByDate', isAuthenticated, async (req, res) => {
   } catch (error) {
     console.error('データ取得エラー:', error);
     res.status(500).json({ error: 'データ取得エラー', message: error.message });
-  }finally{
-    if (connection) connection.release(); // 接続を解放
   }
 });
 
