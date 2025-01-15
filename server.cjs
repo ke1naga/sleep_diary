@@ -128,8 +128,9 @@ function isValidDate(dateString) {
 }
 
 // データの追加または上書きエンドポイント
+
 app.post('/saveOrUpdate', isAuthenticated, async(req, res) => {
-  const { date, value, mood, diary } = req.body;
+  const { date, value, mood, diary, user_id} = req.body;
 
   console.log('受け取ったデータ:', { date, value, mood, diary });  // ここで確認
 
@@ -157,7 +158,6 @@ app.post('/saveOrUpdate', isAuthenticated, async(req, res) => {
 
   const userId = req.session.userId;
 
-  let connection;
   try {
     const [result] = await connection.query(query, [formattedDate, value, mood, diary, userId]);
     console.log('データ保存または更新成功:', result);
@@ -191,10 +191,8 @@ app.get('/getDataByDate', isAuthenticated, async (req, res) => {
   // 日付をフォーマットして統一
   const formattedDate = format(parseISO(date), 'yyyy-MM-dd');
 
-  let connection;
   try {
     const query = 'SELECT * FROM sleep_info WHERE date = ?';
-    connection = await connection.getConnection(); // 接続を取得
     const [results] = await connection.query(query, [formattedDate]);
 
     if (results.length === 0) {

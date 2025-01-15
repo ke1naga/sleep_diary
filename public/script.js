@@ -15,13 +15,15 @@ document.getElementById('dataForm').addEventListener('submit', function (event) 
     const formattedDate = date.toISOString().split('T')[0];  // 'YYYY-MM-DD'形式に変換
     console.log(formattedDate);  // 例: "2025-01-05"
 
-    // クライアント側でデータを送信
+
+    // クライアント側でデータを送信---------
+    const userId = 1;  // ログイン中のユーザーID
     fetch(`${base_url}/saveOrUpdate`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'  // JSONデータを送信
         },
-        body: JSON.stringify({ date: formattedDate, value: value, mood: mood, diary: diary })  // 送信するデータ
+        body: JSON.stringify({ date: formattedDate, value: value, mood: mood, diary: diary, user_id:userId })  // 送信するデータ
     })
     .then(response => {
         if (!response.ok) {
