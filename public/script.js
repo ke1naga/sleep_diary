@@ -52,7 +52,7 @@ document.getElementById('dataForm').addEventListener('submit', function (event) 
             values.push(value);
             values2.push(mood);
             diaries.push(diary);
-            bedtimes.push(bed_times);
+            bedTimes.push(bed_times);
             wakeUpTimes.push(wake_up_times);
         }
 
