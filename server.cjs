@@ -149,7 +149,7 @@ app.post('/saveOrUpdate', isAuthenticated, async(req, res) => {
   
   const query = `
     INSERT INTO sleep_info (date, value, mood, diary, user_id, wake_up_times, bed_times )
-    VALUES (?, ?, ?, ?, ?)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
     ON DUPLICATE KEY UPDATE
     value = VALUES(value),
     mood = VALUES(mood),
