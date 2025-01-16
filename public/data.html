@@ -131,6 +131,14 @@
       const jstDate = new Date(utcDate.getTime() + 9 * 60 * 60 * 1000); // UTCから9時間加算
       const formattedDate = jstDate.toISOString().split('T')[0]; // 'YYYY-MM-DD'形式
 
+         // 就寝時間と起床時間を「00:00」形式にフォーマット
+    const formatTime = (time) => {
+      const date = new Date(time);
+      const hours = String(date.getHours()).padStart(2, '0');
+      const minutes = String(date.getMinutes()).padStart(2, '0');
+      return `${hours}:${minutes}`;
+    };
+    
       dateCell.textContent = formattedDate; // 日付を設定
       valueCell.textContent = row.value; // 睡眠時間を設定
       bedTimesCell.textContent =row.bed_times;
