@@ -5,7 +5,7 @@ document.getElementById('dataForm').addEventListener('submit', function (event) 
 
     const dateInput = document.getElementById('date').value; // 入力された日付
     const value = parseFloat(document.getElementById('value').value); // 入力された数値 (数値に変換)
-    const bed_times =document.getRlementById('bed_times').value;
+    const bed_times =document.getElementById('bed_times').value;
     const wake_up_times = document.getElementById('wake_up_times').value;
     const mood = parseFloat(document.getElementById('mood').value);  // 入力された気分スコア
     const diary =document.getElementById('diary').value; //入力された日記
@@ -252,7 +252,7 @@ function drawGraph(dates, values, values2,bedTimes,wakeUpTimes) {
                 axis: 'xy'
             }
         }
-    });
+    }
 }
 
     // 範囲選択----------------------------------------
