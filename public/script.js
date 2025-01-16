@@ -252,8 +252,8 @@ function drawGraph(dates, values, values2,bedTimes,wakeUpTimes) {
                 axis: 'xy'
             }
         }
-    }
-});
+    }});
+}
 
     // 範囲選択----------------------------------------
     document.getElementById('dateRangeSelector').addEventListener('change', function () {
@@ -292,7 +292,7 @@ function drawGraph(dates, values, values2,bedTimes,wakeUpTimes) {
             startDate = new Date(today)
             startDate.setMonth(today.getMonth() - 1);  // 1ヶ月分
             break;
-        　case 'all':
+        case 'all':
             startDate= new Date(0);
             break;
           default:
@@ -355,5 +355,4 @@ function updateChart(data) {
     }
   
     drawGraph(dates, values, values2, bedTimes, wakeUpTimes);  // グラフを更新
-  }
-  
+}
