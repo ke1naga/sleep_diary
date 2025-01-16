@@ -147,6 +147,10 @@ app.post('/saveOrUpdate', isAuthenticated, async(req, res) => {
   const formattedDate = format(localDate, 'yyyy-MM-dd'); // 'yyyy-MM-dd' の形式にフォーマット
   console.log(formattedDate);  // 例: '2025-01-09'
   
+   // 時間を 'HH:mm' 形式にフォーマット
+   const formattedBedTime = format(new Date(`1970-01-01T${bed_times}Z`), 'HH:mm');
+   const formattedWakeUpTime = format(new Date(`1970-01-01T${wake_up_times}Z`), 'HH:mm');
+
   const query = `
     INSERT INTO sleep_info (date, value, mood, diary, user_id, wake_up_times, bed_times )
     VALUES (?, ?, ?, ?, ?, ?, ?)
@@ -161,7 +165,7 @@ app.post('/saveOrUpdate', isAuthenticated, async(req, res) => {
   const userId = req.session.userId;
 
   try {
-    const [result] = await connection.query(query, [formattedDate, value, mood, diary, userId, wake_up_times, bed_times]);
+    const [result] = await connection.query(query, [formattedDate, value, mood, diary, userId, formattedWakeUpTime, formattedBedTime]);
     console.log('データ保存または更新成功:', result);
     res.json({ message: 'データが保存または更新されました', result });
   } catch (error) {
@@ -222,6 +226,7 @@ app.get('/getDataInRange', isAuthenticated, async (req, res) => {
   const endDate = format(new Date(baseDate.getTime() + 30 * 24 * 60 * 60 * 1000), 'yyyy-MM-dd');   // 基準日の30日後
 
   try {
+    
     const query = 'SELECT * FROM sleep_info WHERE date BETWEEN ? AND ? ORDER BY date ASC';
     const [results] = await connection.query(query, [startDate, endDate]);
 
