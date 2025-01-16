@@ -52,6 +52,14 @@
       <label for="value">睡眠時間:</label>
       <input class="int" type="number" id="value" name="sleep_hours" step="0.5" min="0" max="24" required>
       </div>
+      <div onclick="focusTextarea('bed_times')">
+        <label for="wakeup_times">就寝時間:</label>
+        <input type="time" id="bed_times" name="bed_times" required>
+        </div>
+      <div onclick="focusTextarea('wake_up_times')">
+          <label for="bed_times">起床時間:</label>
+          <input type="time" id="bed_times" name="wake_up_times" required>
+          </div>
       <div onclick="focusTextarea('mood')">
       <label for="mood">気分スコア:</label>
       <input class="int" type="number" id="mood" name="mood" min="0" max="10" required>

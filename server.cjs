@@ -130,9 +130,9 @@ function isValidDate(dateString) {
 // データの追加または上書きエンドポイント
 
 app.post('/saveOrUpdate', isAuthenticated, async(req, res) => {
-  const { date, value, mood, diary, user_id} = req.body;
+  const { date, value, mood, diary, user_id, wake_up_times, bed_times} = req.body;
 
-  console.log('受け取ったデータ:', { date, value, mood, diary });  // ここで確認
+  console.log('受け取ったデータ:', { date, value, mood, diary, user_id, wake_up_times, bed_times});  // ここで確認
 
   if (!date || !isValidDate(date)) {
     return res.status(400).json({ error: '無効な日付形式です' });
@@ -148,18 +148,20 @@ app.post('/saveOrUpdate', isAuthenticated, async(req, res) => {
   console.log(formattedDate);  // 例: '2025-01-09'
   
   const query = `
-    INSERT INTO sleep_info (date, value, mood, diary, user_id)
+    INSERT INTO sleep_info (date, value, mood, diary, user_id, wake_up_times, bed_times )
     VALUES (?, ?, ?, ?, ?)
     ON DUPLICATE KEY UPDATE
     value = VALUES(value),
     mood = VALUES(mood),
-    diary = VALUES(diary);
+    diary = VALUES(diary),
+    wake_up_times = VALUES(wake_up_times),
+    bed_times =VALUES(bed_times);
   `;
 
   const userId = req.session.userId;
 
   try {
-    const [result] = await connection.query(query, [formattedDate, value, mood, diary, userId]);
+    const [result] = await connection.query(query, [formattedDate, value, mood, diary, userId, wake_up_times, bed_times]);
     console.log('データ保存または更新成功:', result);
     res.json({ message: 'データが保存または更新されました', result });
   } catch (error) {

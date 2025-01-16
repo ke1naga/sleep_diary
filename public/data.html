@@ -45,6 +45,8 @@
             <tr>
               <th style="width:10%;">日付</th>
               <th style="width:5%;">睡眠時間</th>
+              <th style="width:5%;">就寝時間</th>
+              <th style="width:5%;">起床時間</th>
               <th style="width:5%;">気分スコア</th>
               <th style="width:80%;">日記</th>
             </tr>
@@ -119,8 +121,10 @@
       const newRow = tableBody.insertRow();
       const dateCell = newRow.insertCell(0);
       const valueCell = newRow.insertCell(1);
-      const moodCell = newRow.insertCell(2);
-      const diaryCell = newRow.insertCell(3);
+      const bedTimesCell =newRow.insertCell(2);
+      const wakeUpTimesCell = newRow.insertCell(3);
+      const moodCell = newRow.insertCell(4);
+      const diaryCell = newRow.insertCell(5);
 
       // 日付のフォーマットを 'YYYY-MM-DD' に変更
       const utcDate = new Date(row.date);
@@ -129,6 +133,8 @@
 
       dateCell.textContent = formattedDate; // 日付を設定
       valueCell.textContent = row.value; // 睡眠時間を設定
+      bedTimesCell.textContent =row.bed_times;
+      wakeUpTimesCell.textContent =row.wake_up_times;
       moodCell.textContent = row.mood; // 気分スコアを設定
 
       // 日記内容に改行を含めるために、<pre>タグや改行を反映

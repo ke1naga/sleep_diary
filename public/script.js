@@ -178,6 +178,26 @@ function drawGraph(dates, values, values2) {
                     backgroundColor: 'rgba(114, 255, 119, 0.2)',  // 塗りつぶし色
                     fill: false,  // 塗りつぶし無し
                     tension: 0.1
+                },
+                {
+                    label: '起床時間',  // 起床時間
+                    data: wakeUpTimes,  // 起床時間のデータ
+                    borderColor: 'rgb(251, 127, 214)', // 起床時間の線の色
+                    backgroundColor: 'rgba(255, 99, 190, 0.2)', // 塗りつぶし色
+                    fill: false,
+                    tension: 0.1,
+                    borderDash: [5, 5],  // 点線にする
+                    yAxisID: 'y2'  // 別のY軸を使う設定（オプション）
+                },
+                {
+                    label: '就寝時間',  // 就寝時間
+                    data: bedTimes,  // 就寝時間のデータ
+                    borderColor: 'rgb(249, 40, 207)', // 就寝時間の線の色
+                    backgroundColor: 'rgba(227, 54, 198, 0.2)', // 塗りつぶし色
+                    fill: false,
+                    tension: 0.1,
+                    borderDash: [5, 5],  // 点線にする
+                    yAxisID: 'y2'  // 別のY軸を使う設定（オプション）
                 }
             ]
         },
@@ -204,8 +224,14 @@ function drawGraph(dates, values, values2) {
                         text: '睡眠時間'
                     },
                     beginAtZero: true  // Y軸を0から始める
-                }
-            },
+                },
+                y2: {  // 別のY軸を追加
+               0    position: 'right',
+                    title: {
+                        display: true,
+                        text: '時間'
+                    },
+                },
             interaction: {
                 mode: 'nearest',
                 intersect: false,
