@@ -5,11 +5,13 @@ document.getElementById('dataForm').addEventListener('submit', function (event) 
 
     const dateInput = document.getElementById('date').value; // 入力された日付
     const value = parseFloat(document.getElementById('value').value); // 入力された数値 (数値に変換)
+    const bed_times =document.getRlementById('bed_times').value;
+    const wake_up_times = document.getElementById('wake_up_times').value;
     const mood = parseFloat(document.getElementById('mood').value);  // 入力された気分スコア
     const diary =document.getElementById('diary').value; //入力された日記
 
     // 入力データのログを追加
-    console.log('送信するデータ:', { date: dateInput, value: value, mood: mood, diary:diary });
+    console.log('送信するデータ:', { date: dateInput, value: value, mood: mood, diary:diary, bed_times:bed_times, wake_up_times: wake_up_times });
 
     const date = new Date(dateInput);  // 日付をDateオブジェクトに変換
     const formattedDate = date.toISOString().split('T')[0];  // 'YYYY-MM-DD'形式に変換
@@ -23,7 +25,7 @@ document.getElementById('dataForm').addEventListener('submit', function (event) 
         headers: {
             'Content-Type': 'application/json'  // JSONデータを送信
         },
-        body: JSON.stringify({ date: formattedDate, value: value, mood: mood, diary: diary, user_id:userId })  // 送信するデータ
+        body: JSON.stringify({ date: formattedDate, value: value, mood: mood, diary: diary, user_id:userId, bed_times:bed_times, wake_up_times:wake_up_times })  // 送信するデータ
     })
     .then(response => {
         if (!response.ok) {
@@ -42,18 +44,22 @@ document.getElementById('dataForm').addEventListener('submit', function (event) 
             values[index] = value;
             values2[index] = mood;
             diaries[index] = diary;
+            bedTimes[index] =bed_times;
+            wakeUpTimes[index] = wake_up_times;
         } else {
             // 新しい日付なら追加
             dates.push(formattedDate);
             values.push(value);
             values2.push(mood);
             diaries.push(diary);
+            bedtimes.push(bed_times);
+            wakeUpTimes.push(wake_up_times);
         }
 
         // データが保存された後にグラフを更新
         // 既存のデータに新しいデータを追加
-        console.log(dates, values, values2, diaries); // データが正しく渡されているか確認
-        drawGraph(dates, values, values2);  // 新しいデータでグラフ更新
+        console.log(dates, values, values2, diaries,bedTimes, wakeUpTimes); // データが正しく渡されているか確認
+        drawGraph(dates, values, values2, bedTimes, wakeUpTimes);  // 新しいデータでグラフ更新
         window.location.href = '/graph.html';
     })
     .catch(error => {
@@ -86,11 +92,15 @@ document.getElementById('date').addEventListener('change', function () {
                 document.getElementById('value').value = data.value || '';
                 document.getElementById('mood').value = data.mood || '';
                 document.getElementById('diary').value = data.diary || '';
+                document.getElementById('bed_times').value = data.bed_times || '';
+                document.getElementById('wake_up_times').value = data.wake_up_times || '';
             } else {
                 // データがない場合は空欄にリセット
                 document.getElementById('value').value = '';
                 document.getElementById('mood').value = '';
                 document.getElementById('diary').value = '';
+                document.getElementById('bed_times').value = '';
+                document.getElementById('wake_up_times').value = '';
             }
         })
         .catch(error => {
@@ -103,6 +113,8 @@ let dates = [];
 let values = [];
 let values2 = [];
 let diaries = [];
+let bedTimes = [];
+let wakeUpTimes = [];
 
 // ページロード時に保存されたデータを取得してグラフを描画
 window.onload = function () {
@@ -125,13 +137,15 @@ window.onload = function () {
             values = sortedData.map(entry => entry.value);
             values2 = sortedData.map(entry => entry.mood);
             diaries = sortedData.map(entry => entry.diary); // 日記データを取得
+            bedTimes = sortedData.map(entry => entry.bed_times);
+            wakeUpTimes = sortedData.map(entry => entry.wake_up_times);
 
             console.log('変換後の日付:', dates);
             console.log('変換後の値:', values);
             console.log('変換後の気分スコア:', values2);
 
             if (dates.length > 0) {
-                drawGraph(dates, values, values2); // グラフを描画
+                drawGraph(dates, values, values2,bedTimes,wakeUpTimes); // グラフを描画
             } else {
                 console.log('グラフ描画するデータがありません')
             }
@@ -145,7 +159,7 @@ window.onload = function () {
 // グラフ描画関数
 let chartInstance = null;
 
-function drawGraph(dates, values, values2) {
+function drawGraph(dates, values, values2,bedTimes,wakeUpTimes) {
     const ctx = document.getElementById('lineChart').getContext('2d');
     console.log('グラフの描画の準備', dates, values, values2); // データ確認
 
@@ -165,7 +179,7 @@ function drawGraph(dates, values, values2) {
             datasets: [
                 {
                     label: '睡眠時間',
-                    data: values,  // Y軸は数値
+                    data: values,  // Y軸は睡眠時間
                     borderColor: 'rgba(75, 192, 192, 1)',
                     backgroundColor: 'rgba(75, 192, 192, 0.2)',
                     fill: false,
@@ -226,7 +240,7 @@ function drawGraph(dates, values, values2) {
                     beginAtZero: true  // Y軸を0から始める
                 },
                 y2: {  // 別のY軸を追加
-               0    position: 'right',
+                    position: 'right',
                     title: {
                         display: true,
                         text: '時間'
@@ -319,6 +333,8 @@ function updateChart(data) {
     const dates = [];
     const values = [];
     const values2 = [];
+    const bedTimes = [];
+    const wakeUpTimes =[];
   
     // データを整理してグラフに表示する形式に整える
     data.forEach(row => {
@@ -329,6 +345,8 @@ function updateChart(data) {
       dates.push(formattedDate);
       values.push(row.value);
       values2.push(row.mood);
+      bedTimes.push(row.bed_times);
+      wakeUpTimes.push(row.wake_up_times);
     });
 
        // グラフを描画前に既存のグラフインスタンスをリセット
@@ -336,6 +354,6 @@ function updateChart(data) {
         chartInstance.destroy();  // 既存のチャートを破棄
     }
   
-    drawGraph(dates, values, values2);  // グラフを更新
+    drawGraph(dates, values, values2, bedTimes, wakeUpTimes);  // グラフを更新
   }
   
