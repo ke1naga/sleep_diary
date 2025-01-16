@@ -253,7 +253,7 @@ function drawGraph(dates, values, values2,bedTimes,wakeUpTimes) {
             }
         }
     }
-}
+});
 
     // 範囲選択----------------------------------------
     document.getElementById('dateRangeSelector').addEventListener('change', function () {
