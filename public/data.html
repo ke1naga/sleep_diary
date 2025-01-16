@@ -132,7 +132,13 @@
       const formattedDate = jstDate.toISOString().split('T')[0]; // 'YYYY-MM-DD'形式
 
     // 就寝時間と起床時間を「00:00」形式にフォーマット
-      const formatTimeWithoutSeconds=(time) => time.slice(0,5);
+    const formatTimeWithoutSeconds = (time) => {
+      if (time && typeof time === 'string') {
+      return time.slice(0, 5);
+      } else {
+      return ''; // 値が存在しない場合のデフォルト値
+        }
+    };
 
       dateCell.textContent = formattedDate; // 日付を設定
       valueCell.textContent = row.value; // 睡眠時間を設定
