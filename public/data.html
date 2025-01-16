@@ -142,7 +142,7 @@
       dateCell.textContent = formattedDate; // 日付を設定
       valueCell.textContent = row.value; // 睡眠時間を設定
       bedTimesCell.textContent =formatTime(row.bed_times);
-      wakeUpTimesCell.textContent =formatTime(wake_up_times);
+      wakeUpTimesCell.textContent =formatTime(row.wake_up_times);
       moodCell.textContent = row.mood; // 気分スコアを設定
 
       // 日記内容に改行を含めるために、<pre>タグや改行を反映
