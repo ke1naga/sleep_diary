@@ -142,4 +142,7 @@ form{
     max-height: 40vh; 
 }
 
+.time{
+    width:2rem;
+}
 }
