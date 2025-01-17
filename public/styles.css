@@ -14,8 +14,16 @@ header{
     text-align: center;
     background-color: aqua;
     padding: 0.5rem;
+    height: 12vh;
 }
 
+footer{
+    font-size: 1.2rem;
+    text-align: center;
+    background-color: aqua;
+    padding: 0.5rem;
+    height:5vh;
+}
 nav{
     display:flex;
     justify-content: flex-end;
@@ -45,7 +53,8 @@ nav a:hover {
 
 main{
     margin: 0 auto;
-    width:80%;   
+    width:80%; 
+    min-height: 83vh;  
 }
 
 .data {
