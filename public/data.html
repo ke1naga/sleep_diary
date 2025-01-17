@@ -45,8 +45,8 @@
             <tr>
               <th style="width:10%;">日付</th>
               <th style="width:5%;">睡眠時間</th>
-              <th class="time" style="width:5%;">就寝時間</th>
-              <th class="time" style="width:5%;">起床時間</th>
+              <th class="vertical-text" style="width:5%;">就寝時間</th>
+              <th class="vertical-text" style="width:5%;">起床時間</th>
               <th style="width:5%;">気分スコア</th>
               <th style="width:80%;">日記</th>
             </tr>
@@ -122,7 +122,9 @@
       const dateCell = newRow.insertCell(0);
       const valueCell = newRow.insertCell(1);
       const bedTimesCell =newRow.insertCell(2);
+      bedTimesCell.classList.add('vertical-text');
       const wakeUpTimesCell = newRow.insertCell(3);
+      wakeUpTimesCell.classList.add('vertical-text');
       const moodCell = newRow.insertCell(4);
       const diaryCell = newRow.insertCell(5);
 
