@@ -87,13 +87,14 @@ main{
       }
 
 button {
-    padding:0.1rem 1rem;
+    padding:0.2rem 1rem;
     font-size: 1rem;
     border: none;
     background-color: #4c9daf;
     color: white;
     cursor: pointer;
     border-radius: 8px;
+    margin-bottom: 0.3rem;
 }
 
 button:hover {
