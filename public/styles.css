@@ -145,7 +145,7 @@ form{
 
 .vertical-text {
     writing-mode: vertical-rl; /* 文字を縦書きに変更 */
-    text-orientation: upright; /* 文字の向きを縦に保つ */
+    text-orientation:sideways; /* 文字の向きを縦に保つ */
     white-space: nowrap; /* 折り返しを防ぐ */
     text-align: center; /* 中央揃え */
 }
