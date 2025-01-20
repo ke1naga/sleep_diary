@@ -276,7 +276,8 @@ function drawGraph(dates, values, values2,bedTimes,wakeUpTimes) {
                 axis: 'xy'
             }
         }
-    }});
+    }
+);
 }
 
     // 範囲選択----------------------------------------
