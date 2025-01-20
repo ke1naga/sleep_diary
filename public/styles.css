@@ -132,7 +132,11 @@ select {
     }
 
     .vertical-text {
-        width:1rem;
+        writing-mode: vertical-rl;
+        text-orientation: upright;
+        white-space: nowrap;
+        text-align: center;
+        max-width: 1.2rem; 
     }
 
 
@@ -158,6 +162,12 @@ form{
 }
 
 .vertical-text {
-    width:1rem;
+    writing-mode: vertical-rl;
+    text-orientation: upright;
+    white-space: nowrap;
+    text-align: center;
+    max-width: 1.2rem; 
 }
+
+
 }
