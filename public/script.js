@@ -227,8 +227,8 @@ function drawGraph(dates, values, values2,bedTimes,wakeUpTimes) {
                 {
                     label: '就寝時間',  
                     data: bedTimesInMinutes,  
-                    borderColor: 'rgb(249, 40, 207)', // 就寝時間の線の色
-                    backgroundColor: 'rgba(227, 54, 198, 0.2)', // 塗りつぶし色
+                    borderColor: 'rgb(75, 118, 229)', // 就寝時間の線の色
+                    backgroundColor: 'rgba(79, 60, 226, 0.2)', // 塗りつぶし色
                     fill: false,
                     tension: 0.1,
                     borderDash: [5, 5],  // 点線にする
