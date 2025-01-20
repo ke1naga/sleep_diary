@@ -32,7 +32,6 @@ document.getElementById('dataForm').addEventListener('submit', function (event) 
             return;  // 認証されていない場合は処理を中止
         }
 
-
     const dateInput = document.getElementById('date').value; // 入力された日付
     const value = parseFloat(document.getElementById('value').value); // 入力された数値 (数値に変換)
     const bed_times =document.getElementById('bed_times').value;
@@ -96,6 +95,7 @@ document.getElementById('dataForm').addEventListener('submit', function (event) 
         console.error('保存エラー:', error);  // エラー処理
         alert('データの保存に失敗しました');
     });
+});
 });
 
 // 日付が変更されたときに該当データを取得してフォームにセット
