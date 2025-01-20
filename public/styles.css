@@ -132,9 +132,13 @@ select {
     }
 
     .vertical-text {
-        max-width: 5%; 
+        writing-mode: vertical-rl;
+        -webkit-writing-mode: vertical-rl; /* Safari用縦書き */
+        text-orientation: upright;
+        white-space: nowrap;
+        text-align: center;
     }
-    
+
 @media(max-width:500px){
 form{
     flex-direction: column;    
