@@ -57,6 +57,16 @@ function isAuthenticated(req, res, next) {
   }
 }
 
+app.get('/isauthenticated', (req, res) => {
+  // セッション内に loggedIn が true なら認証されているとみなす
+  if (req.session.loggedIn) {
+      res.json({ authenticated: true });
+  } else {
+      res.json({ authenticated: false });
+  }
+});
+
+
 // ログインページ
 app.get('/login', (req, res) => {
   res.send(`
