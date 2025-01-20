@@ -176,18 +176,20 @@ function drawGraph(dates, values, values2,bedTimes,wakeUpTimes) {
 
 
     // 起床時間と就寝時間を分単位で変換
-    const bedTimesInMinutes = bedTimes
-    .filter(time => time != null && time.trim() !== '') // null または 空の文字列を除外map(time => {
-    .map(time => {
+    const bedTimesInMinutes = bedTimes.map(time => {
+        if(time && time.includes(':')){
         const [hours, minutes] = time.split(':').map(Number);
         return hours * 60 + minutes; // 分単位に変換
+        }
+        return null;
     });
 
-    const wakeUpTimesInMinutes = wakeUpTimes
-    .filter(time => time != null && time.trim() !== '') // null または 空の文字列を除外
-    .map(time => {
+    const wakeUpTimesInMinutes = wakeUpTimes.map(time => {
+        if(time && time.includes(':')){
         const [hours, minutes] = time.split(':').map(Number);
         return hours * 60 + minutes; // 分単位に変換
+        }
+        return null;
     });
 
 
