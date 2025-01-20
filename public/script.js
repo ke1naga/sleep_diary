@@ -29,6 +29,7 @@ document.getElementById('dataForm').addEventListener('submit', function (event) 
     })
     .then(response => {
         if (!response.ok) {
+            alert("ログインしてください。");
             throw new Error('サーバーエラー');
         }
         return response.json(); // レスポンスをJSON形式で取得
@@ -80,6 +81,7 @@ document.getElementById('date').addEventListener('change', function () {
     fetch(`${base_url}/getDataByDate?date=${formattedDate}`)
         .then(response => {
             if (!response.ok) {
+                alert("ログインしてください。");
                 throw new Error('データ取得エラー');
             }
             return response.json();
@@ -195,7 +197,9 @@ function drawGraph(dates, values, values2,bedTimes,wakeUpTimes) {
                 },
                 {
                     label: '起床時間',  // 起床時間
-                    data: wakeUpTimes,  // 起床時間のデータ
+                    data: wakeUpTimes.map(timeString=>({
+                            y:timeString,
+                    })),
                     borderColor: 'rgb(251, 127, 214)', // 起床時間の線の色
                     backgroundColor: 'rgba(255, 99, 190, 0.2)', // 塗りつぶし色
                     fill: false,
