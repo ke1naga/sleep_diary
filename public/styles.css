@@ -135,6 +135,7 @@ select {
         writing-mode: vertical-rl;
         -webkit-writing-mode: vertical-rl; /* Safari用縦書き */
         text-orientation: upright;
+        -webkit-text-orientation: upright; /* Safari用プレフィックス */
         white-space: nowrap;
         text-align: center;
     }
