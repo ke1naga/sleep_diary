@@ -10,7 +10,7 @@ const base_url = 'https://sleep-diary-5uzz.onrender.com';
         .then(data => {
             if (!data.authenticated) {
                 alert('ログインしていません。ログインしてください。');
-                redirect("index.html");
+                window.location.replace("index.html");
                 return false;
             }
             return true;
