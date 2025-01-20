@@ -131,6 +131,10 @@ select {
       background-color: #67ffd6;
     }
 
+    .vertical-text {
+        width:5%;
+    }
+
 
 @media(max-width:500px){
 form{
@@ -158,5 +162,6 @@ form{
     text-orientation: upright; /* 文字の向きを縦に保つ */
     white-space: nowrap; /* 折り返しを防ぐ */
     text-align: center; /* 中央揃え */
+    width:1rem;
 }
 }
