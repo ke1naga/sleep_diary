@@ -1,7 +1,37 @@
 const base_url = 'https://sleep-diary-5uzz.onrender.com';
 
+    // 認証状態をチェックする関数
+    function checkAuthentication() {
+        return fetch(`${base_url}/isauthenticated`, {
+            method: 'GET',
+            credentials: 'include', // クッキーなどを送信する場合はこれを追加
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (!data.authenticated) {
+                alert('ログインしていません。ログインしてください。');
+                redirect("index.html");
+                return false;
+            }
+            return true;
+        })
+        .catch(error => {
+            console.error('認証チェックエラー:', error);
+            alert('認証の確認に失敗しました。');
+            return false;
+        });
+    }
+
 document.getElementById('dataForm').addEventListener('submit', function (event) {
     event.preventDefault(); // フォーム送信を防ぐ
+
+
+    // 認証チェック
+    checkAuthentication().then(isAuthenticated => {
+        if (!isAuthenticated) {
+            return;  // 認証されていない場合は処理を中止
+        }
+
 
     const dateInput = document.getElementById('date').value; // 入力された日付
     const value = parseFloat(document.getElementById('value').value); // 入力された数値 (数値に変換)
@@ -29,7 +59,6 @@ document.getElementById('dataForm').addEventListener('submit', function (event) 
     })
     .then(response => {
         if (!response.ok) {
-            alert("ログインしてください。");
             throw new Error('サーバーエラー');
         }
         return response.json(); // レスポンスをJSON形式で取得
@@ -81,7 +110,6 @@ document.getElementById('date').addEventListener('change', function () {
     fetch(`${base_url}/getDataByDate?date=${formattedDate}`)
         .then(response => {
             if (!response.ok) {
-                alert("ログインしてください。");
                 throw new Error('データ取得エラー');
             }
             return response.json();
