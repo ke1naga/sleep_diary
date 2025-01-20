@@ -132,14 +132,9 @@ select {
     }
 
     .vertical-text {
-        writing-mode: vertical-rl;
-        text-orientation: upright;
-        white-space: nowrap;
-        text-align: center;
-        max-width: 1.2rem; 
+        max-width: 5%; 
     }
-
-
+    
 @media(max-width:500px){
 form{
     flex-direction: column;    
@@ -163,6 +158,7 @@ form{
 
 .vertical-text {
     writing-mode: vertical-rl;
+    -webkit-writing-mode: vertical-rl; /* Safari用縦書き */
     text-orientation: upright;
     white-space: nowrap;
     text-align: center;
