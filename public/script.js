@@ -100,6 +100,13 @@ document.getElementById('dataForm').addEventListener('submit', function (event) 
 
 // 日付が変更されたときに該当データを取得してフォームにセット
 document.getElementById('date').addEventListener('change', function () {
+
+    // 認証チェック
+    checkAuthentication().then(isAuthenticated => {
+        if (!isAuthenticated) {
+            return;  // 認証されていない場合は処理を中止
+        }
+
     const dateInput = this.value; // 入力された日付
     const date = new Date(dateInput);
     const formattedDate = date.toISOString().split('T')[0]; // YYYY-MM-DD形式に変換
@@ -137,6 +144,8 @@ document.getElementById('date').addEventListener('change', function () {
             console.error('エラー:', error);
         });
 });
+});
+
 
 // 初期のデータを保持
 let dates = [];
