@@ -4,7 +4,6 @@ const base_url = 'https://sleep-diary-5uzz.onrender.com';
     function checkAuthentication() {
         return fetch(`${base_url}/isauthenticated`, {
             method: 'GET',
-            credentials: 'include', // クッキーなどを送信する場合はこれを追加
         })
         .then(response => response.json())
         .then(data => {
