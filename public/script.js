@@ -174,6 +174,19 @@ function drawGraph(dates, values, values2,bedTimes,wakeUpTimes) {
         chartInstance.destroy();
     }
 
+
+    // 起床時間と就寝時間を分単位で変換
+    const bedTimesInMinutes = bedTimes.map(time => {
+        const [hours, minutes] = time.split(':').map(Number);
+        return hours * 60 + minutes; // 分単位に変換
+    });
+
+    const wakeUpTimesInMinutes = wakeUpTimes.map(time => {
+        const [hours, minutes] = time.split(':').map(Number);
+        return hours * 60 + minutes; // 分単位に変換
+    });
+
+
     chartInstance = new Chart(ctx, {
         type: 'line',
         data: {
@@ -196,10 +209,8 @@ function drawGraph(dates, values, values2,bedTimes,wakeUpTimes) {
                     tension: 0.1
                 },
                 {
-                    label: '起床時間',  // 起床時間
-                    data: wakeUpTimes.map(timeString=>({
-                            y:timeString,
-                    })),
+                    label: '起床時間',  
+                    data: wakeUpTimesInMinutes,
                     borderColor: 'rgb(251, 127, 214)', // 起床時間の線の色
                     backgroundColor: 'rgba(255, 99, 190, 0.2)', // 塗りつぶし色
                     fill: false,
@@ -208,8 +219,8 @@ function drawGraph(dates, values, values2,bedTimes,wakeUpTimes) {
                     yAxisID: 'y2'  // 別のY軸を使う設定（オプション）
                 },
                 {
-                    label: '就寝時間',  // 就寝時間
-                    data: bedTimes,  // 就寝時間のデータ
+                    label: '就寝時間',  
+                    data: bedTimesInMinutes,  
                     borderColor: 'rgb(249, 40, 207)', // 就寝時間の線の色
                     backgroundColor: 'rgba(227, 54, 198, 0.2)', // 塗りつぶし色
                     fill: false,
@@ -249,7 +260,16 @@ function drawGraph(dates, values, values2,bedTimes,wakeUpTimes) {
                         display: true,
                         text: '時間'
                     },
+                    ticks: {
+                        callback: function(value) {
+                            // 分単位を「hh:mm」形式に変換して表示
+                            const hours = Math.floor(value / 60);
+                            const minutes = value % 60;
+                            return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+                        }
+                    }
                 },
+            },
             interaction: {
                 mode: 'nearest',
                 intersect: false,
