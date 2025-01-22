@@ -22,6 +22,31 @@ const base_url = 'https://sleep-diary-5uzz.onrender.com';
         });
     }
 
+
+    // 就寝時間と起床時間から睡眠時間を計算する関数
+function calculateSleepDuration(bedTime, wakeUpTime) {
+    const [bedHours, bedMinutes] = bedTime.split(':').map(Number);
+    const bedTimeInMinutes = bedHours * 60 + bedMinutes;
+
+    const [wakeHours, wakeMinutes] = wakeUpTime.split(':').map(Number);
+    let wakeTimeInMinutes = wakeHours * 60 + wakeMinutes;
+
+    // 起床時間が翌日の場合
+    if (wakeTimeInMinutes < bedTimeInMinutes) {
+        wakeTimeInMinutes += 24 * 60; // 24時間分を加算
+    }
+
+    // 睡眠時間を計算
+    const sleepDurationInMinutes = wakeTimeInMinutes - bedTimeInMinutes;
+
+    // 時間と分に変換
+    const sleepHours = Math.floor(sleepDurationInMinutes / 60);
+    const sleepMinutes = sleepDurationInMinutes % 60;
+
+    return sleepHours + (sleepMinutes / 60); // 時間単位で返す
+}
+
+
 document.getElementById('dataForm').addEventListener('submit', function (event) {
     event.preventDefault(); // フォーム送信を防ぐ
 
@@ -33,14 +58,24 @@ document.getElementById('dataForm').addEventListener('submit', function (event) 
         }
 
     const dateInput = document.getElementById('date').value; // 入力された日付
-    const value = parseFloat(document.getElementById('value').value); // 入力された数値 (数値に変換)
     const bed_times =document.getElementById('bed_times').value;
     const wake_up_times = document.getElementById('wake_up_times').value;
-    const mood = parseFloat(document.getElementById('mood').value);  // 入力された気分スコア
+    const mood = parseFloat(document.getElementById('mood').value);  // 入力された気分スコア(数値に変換）
     const diary =document.getElementById('diary').value; //入力された日記
 
+    //睡眠時間計算について
+    let sleepDuration;
+        // 就寝時間と起床時間が両方入力されている場合にのみ計算
+        if (bed_times && wake_up_times) {
+            sleepDuration = calculateSleepDuration(bed_times, wake_up_times);
+        } else {
+            // 入力が空の場合は、既存のvalue値を使用（値が空でないか確認）
+            const existingValue = values[dates.indexOf(dateInput)];
+            sleepDuration = existingValue || 0; // 既存の値がなければ0を使用
+        }
+
     // 入力データのログを追加
-    console.log('送信するデータ:', { date: dateInput, value: value, mood: mood, diary:diary, bed_times:bed_times, wake_up_times: wake_up_times });
+    console.log('送信するデータ:', { date: dateInput, value: sleepDuration, mood: mood, diary:diary, bed_times:bed_times, wake_up_times: wake_up_times });
 
     const date = new Date(dateInput);  // 日付をDateオブジェクトに変換
     const formattedDate = date.toISOString().split('T')[0];  // 'YYYY-MM-DD'形式に変換
@@ -54,7 +89,7 @@ document.getElementById('dataForm').addEventListener('submit', function (event) 
         headers: {
             'Content-Type': 'application/json'  // JSONデータを送信
         },
-        body: JSON.stringify({ date: formattedDate, value: value, mood: mood, diary: diary, user_id:userId, bed_times:bed_times, wake_up_times:wake_up_times })  // 送信するデータ
+        body: JSON.stringify({ date: formattedDate, value: sleepDuration, mood: mood, diary: diary, user_id:userId, bed_times:bed_times, wake_up_times:wake_up_times })  // 送信するデータ
     })
     .then(response => {
         if (!response.ok) {
@@ -70,7 +105,7 @@ document.getElementById('dataForm').addEventListener('submit', function (event) 
 
         if (index !== -1) {
             // 同じ日付が存在する場合はその数値を上書き
-            values[index] = value;
+            values[index] = sleepDuration;
             values2[index] = mood;
             diaries[index] = diary;
             bedTimes[index] =bed_times;
@@ -78,7 +113,7 @@ document.getElementById('dataForm').addEventListener('submit', function (event) 
         } else {
             // 新しい日付なら追加
             dates.push(formattedDate);
-            values.push(value);
+            values.push(sleepDuration);
             values2.push(mood);
             diaries.push(diary);
             bedTimes.push(bed_times);
