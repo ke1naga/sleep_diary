@@ -153,8 +153,8 @@ form{
     max-height: 40vh; 
 }
 
-.small td:nth-child(2),.small td:nth-child(5){
-    font-size:0.8rem;
+.small td:nth-child(1),.small td:nth-child(2),.small td:nth-child(5){
+    font-size:0.9rem;
 }
 
 .small td:nth-child(3),.small td:nth-child(4){
