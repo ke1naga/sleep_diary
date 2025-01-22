@@ -133,6 +133,11 @@ select {
 
 
 @media(max-width:500px){
+
+    main{
+        width:90%; 
+    }
+
 form{
     flex-direction: column;    
 }
