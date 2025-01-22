@@ -161,14 +161,12 @@ document.getElementById('date').addEventListener('change', function () {
 
             if (data) {
                 // 取得したデータを入力欄にセット
-                document.getElementById('value').value = data.value || '';
                 document.getElementById('mood').value = data.mood || '';
                 document.getElementById('diary').value = data.diary || '';
                 document.getElementById('bed_times').value = data.bed_times || '';
                 document.getElementById('wake_up_times').value = data.wake_up_times || '';
             } else {
                 // データがない場合は空欄にリセット
-                document.getElementById('value').value = '';
                 document.getElementById('mood').value = '';
                 document.getElementById('diary').value = '';
                 document.getElementById('bed_times').value = '';
