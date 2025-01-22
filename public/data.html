@@ -63,17 +63,53 @@
         <script>
   const base_url = 'https://sleep-diary-5uzz.onrender.com';
 
-  // ページロード時の処理
+      // 認証状態をチェックする関数
+      function checkAuthentication() {
+        return fetch(`${base_url}/isauthenticated`, {
+            method: 'GET',
+            credentials: 'include'  // 認証情報を含める
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (!data.authenticated) {
+                alert('ログインしていません。ログインしてください。');
+                window.location.replace("index.html");
+                return false;
+            }
+            return true;
+        })
+        .catch(error => {
+            console.error('認証チェックエラー:', error);
+            alert('認証の確認に失敗しました。');
+            window.location.replace("index.html");
+            return false;
+        });
+    }
 
+
+  // ページロード時の処理
   window.onload = function () {
+    checkAuthentication().then(isAuthenticated => {
+        if (!isAuthenticated) {
+            return;  // 認証されていない場合、処理を中止
+        }
+
     const today = new Date();
     const formattedToday = today.toISOString().split('T')[0]; // 今日の日付を 'YYYY-MM-DD'形式にフォーマット
     document.getElementById('datePicker').value = formattedToday; // カレンダーに今日の日付を設定
     fetchDataInRange(formattedToday); // 昨日を中心にデータを取得
-  };
+  
+  });
+};
 
   // カレンダー選択時のデータ取得
   document.getElementById('datePicker').addEventListener('change', function () {
+
+    checkAuthentication().then(isAuthenticated => {
+        if (!isAuthenticated) {
+            return;  // 認証されていない場合、処理を中止
+        }
+
     const selectedDate = this.value; // カレンダーで選択した日付
     console.log('選択された日付:', selectedDate);
 
@@ -83,10 +119,18 @@
     }
 
     fetchDataInRange(selectedDate); // 日付に基づいてデータを取得
+  
   });
+});
 
   //データを取得する関数
   function fetchDataInRange(date){
+
+    checkAuthentication().then(isAuthenticated => {
+        if (!isAuthenticated) {
+            return;  // 認証されていない場合、処理を中止
+        }
+
     fetch(`${base_url}/getDataInRange?date=${date}`, {
       method: 'GET',
       credentials: 'include', // セッション情報を含む
@@ -105,6 +149,7 @@
         console.error('エラー:', error);
         alert('データ取得エラー');
       });
+    });
   }
 
   // テーブルを更新する関数

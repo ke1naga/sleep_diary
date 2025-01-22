@@ -18,6 +18,7 @@ const base_url = 'https://sleep-diary-5uzz.onrender.com';
         .catch(error => {
             console.error('認証チェックエラー:', error);
             alert('認証の確認に失敗しました。');
+            window.location.replace("index.html");
             return false;
         });
     }
@@ -190,6 +191,12 @@ let wakeUpTimes = [];
 
 // ページロード時に保存されたデータを取得してグラフを描画
 window.onload = function () {
+
+    checkAuthentication().then(isAuthenticated => {
+        if (!isAuthenticated) {
+            return;  // 認証されていない場合、処理を中止
+        }
+
     fetch(`${base_url}/getData`)
         .then(response => response.json())
         .then(data => {
@@ -226,6 +233,7 @@ window.onload = function () {
             console.error('データ取得エラー:', error);
             alert('データの取得に失敗しました');
         });
+    });
 };
 
 // グラフ描画関数
