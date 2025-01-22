@@ -80,7 +80,7 @@ main{
 
     /* 入力中に大きくなるスタイル */
     textarea.diary.expanded {
-        min-height: 200px; /* 高さを拡大 */
+        min-height: 250px; /* 高さを拡大 */
         border: 1px solid #207ee1; /* フォーカス時のボーダーカラー */
         background-color: #ffffff; /* 背景色を白く */
         box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3); /* 少し影をつける */
@@ -153,14 +153,12 @@ form{
     max-height: 40vh; 
 }
 
-.vertical-text {
-    writing-mode: vertical-rl;
-    -webkit-writing-mode: vertical-rl; /* Safari用縦書き */
-    text-orientation: upright;
-    -webkit-text-orientation: upright; /* Safari用のプレフィックス */
-    white-space: nowrap;
-    text-align: center;
-    max-width: 1.2rem; 
+.small td:nth-child(2){
+    font-size:0.8rem;
+}
+
+.small td:nth-child(3),.small td:nth-child(4){
+    font-size:0.5rem;
 }
 
 
