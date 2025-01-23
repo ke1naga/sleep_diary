@@ -162,7 +162,7 @@ app.post('/login', async (req, res) => {
           user_id INT NOT NULL,
           wake_up_times TIME,
           bed_times TIME,
-          UNIQUE(date, user_id)
+          UNIQUE(date, user_id),
           FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
         );
       `;
