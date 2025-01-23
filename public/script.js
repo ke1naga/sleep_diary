@@ -47,6 +47,40 @@ function calculateSleepDuration(bedTime, wakeUpTime) {
     return sleepHours + (sleepMinutes / 60); // 時間単位で返す
 }
 
+document.getElementById('registerForm').addEventListener('submit',async function (event){
+    event.preventDefault(); // デフォルトのフォーム送信を防ぐ
+
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+  
+    // 入力値を確認
+    if (!username || !password) {
+      alert('ユーザー名とパスワードを入力してください');
+      return;
+    }
+  
+    try {
+      // サーバーにデータを送信
+      const response = await fetch('/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password }),
+      });
+  
+      const result = await response.json();
+  
+      if (response.ok) {
+        alert('登録が完了しました');
+        console.log(result);
+        window.location.href = '/index.html';
+      } else {
+        alert('登録に失敗しました: ' + result.error);
+      }
+    } catch (error) {
+      console.error('エラー:', error);
+      alert('通信エラーが発生しました');
+    }
+});
 
 document.getElementById('dataForm').addEventListener('submit', function (event) {
     event.preventDefault(); // フォーム送信を防ぐ
