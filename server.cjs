@@ -66,6 +66,44 @@ app.get('/isauthenticated', (req, res) => {
   }
 });
 
+// ユーザー登録ページ
+app.get('/register', (req, res) => {
+  res.send(`
+    <form method="POST" action="/register">
+      <label for="username">ユーザー名:</label>
+      <input type="text" id="username" name="username" required><br>
+      <label for="password">パスワード:</label>
+      <input type="password" id="password" name="password" required><br>
+      <button type="submit">登録</button>
+    </form>
+  `);
+});
+
+// ユーザー登録処理
+app.post('/register', async (req, res) => {
+  const { username, password } = req.body;
+
+  if (!username || !password) {
+    return res.status(400).json({ error: 'ユーザー名とパスワードは必須です' });
+  }
+
+  try {
+    // パスワードをハッシュ化
+    const hashedPassword = await bcrypt.hash(password, 5);
+
+    // ユーザーをデータベースに保存
+    const query = 'INSERT INTO users (username, password) VALUES (?, ?)';
+    const [result] = await connection.query(query, [username, hashedPassword]);
+
+    // 登録成功
+    res.status(201).json({ message: 'ユーザーが登録されました', userId: result.insertId });
+  } catch (error) {
+    console.error('エラー:', error);
+    res.status(500).json({ error: 'ユーザー登録に失敗しました', message: error.message });
+  }
+});
+
+
 
 // ログインページ
 app.get('/login', (req, res) => {
