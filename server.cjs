@@ -163,6 +163,7 @@ app.post('/login', async (req, res) => {
           wake_up_times TIME,
           bed_times TIME,
           UNIQUE(date, user_id)
+          FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
         );
       `;
 
