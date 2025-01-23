@@ -16,6 +16,10 @@ const connection = mysql.createPool({
   database: process.env.DB_NAME
 });
 
+  // ユーザー専用のテーブル名を作成
+  const tableName = `sleep_info_user_${user.id}`;
+
+
 // 非同期接続テスト
 async function testConnection() {
   try {
@@ -110,6 +114,33 @@ app.post('/login', async (req, res) => {
     req.session.userId = user.id;
     req.session.username = user.username;
 
+        // ユーザー専用のテーブル名を作成
+        const tableName = `sleep_info_user_${user.id}`;
+
+        // テーブルが存在するか確認し、存在しない場合は作成
+        const createTableQuery = `
+        CREATE TABLE IF NOT EXISTS ${tableName} (
+          id INT AUTO_INCREMENT PRIMARY KEY,
+          date DATE NOT NULL,
+          value DECIMAL(4,1) NOT NULL,
+          mood INT NOT NULL,
+          diary TEXT,
+          user_id INT NOT NULL,
+          wake_up_times TIME,
+          bed_times TIME,
+          UNIQUE(date, user_id)
+        );
+      `;
+
+      try {
+        await connection.query(createTableQuery); // テーブルを作成
+        console.log(`テーブル ${tableName} が確認または作成されました`);
+      } catch (error) {
+        console.error(`テーブル ${tableName} の作成に失敗しました`, error);
+        return res.status(500).json({ error: 'テーブル作成エラー', message: error.message });
+      }
+
+
     // ログイン成功後に /graph.html にリダイレクト
     res.redirect('/graph.html');
   } catch (error) {
@@ -161,8 +192,10 @@ app.post('/saveOrUpdate', isAuthenticated, async(req, res) => {
    const formattedBedTime = format(new Date(`1970-01-01T${bed_times}Z`), 'HH:mm');
    const formattedWakeUpTime = format(new Date(`1970-01-01T${wake_up_times}Z`), 'HH:mm');
 
+   const tableName = `sleep_info_user_${req.session.userId}`;
+
   const query = `
-    INSERT INTO sleep_info (date, value, mood, diary, user_id, wake_up_times, bed_times )
+    INSERT INTO ${tableName} (date, value, mood, diary, user_id, wake_up_times, bed_times )
     VALUES (?, ?, ?, ?, ?, ?, ?)
     ON DUPLICATE KEY UPDATE
     value = VALUES(value),
@@ -186,8 +219,11 @@ app.post('/saveOrUpdate', isAuthenticated, async(req, res) => {
 
 // データ取得エンドポイント
 app.get('/getData', isAuthenticated, async (req, res) => {
+
+  const tableName = `sleep_info_user_${req.session.userId}`;
+
   try {
-    const [results] = await connection.query('SELECT * FROM sleep_info ORDER BY date ASC');
+    const [results] = await connection.query(`SELECT * FROM ${tableName} ORDER BY date ASC`);
     res.json(results);
   } catch (error) {
     console.error('データ取得エラー:', error);
@@ -207,8 +243,10 @@ app.get('/getDataByDate', isAuthenticated, async (req, res) => {
   // 日付をフォーマットして統一
   const formattedDate = format(parseISO(date), 'yyyy-MM-dd');
 
+  const tableName = `sleep_info_user_${req.session.userId}`;
+
   try {
-    const query = 'SELECT * FROM sleep_info WHERE date = ?';
+    const query = `SELECT * FROM ${tableName} WHERE date = ?`;
     const [results] = await connection.query(query, [formattedDate]);
 
     if (results.length === 0) {
@@ -236,8 +274,9 @@ app.get('/getDataInRange', isAuthenticated, async (req, res) => {
   const endDate = format(new Date(baseDate.getTime() + 30 * 24 * 60 * 60 * 1000), 'yyyy-MM-dd');   // 基準日の30日後
 
   try {
+    const tableName = `sleep_info_user_${req.session.userId}`;
     
-    const query = 'SELECT * FROM sleep_info WHERE date BETWEEN ? AND ? ORDER BY date ASC';
+    const query = `SELECT * FROM ${tableName} WHERE date BETWEEN ? AND ? ORDER BY date ASC`;
     const [results] = await connection.query(query, [startDate, endDate]);
 
     res.json(results); // 前後15日間のデータを返す
@@ -256,8 +295,10 @@ app.get('/getDataInRange2', async(req, res) => {
       return res.status(400).json({ error: '開始日または終了日が指定されていません' });
   }
   
+  const tableName = `sleep_info_user_${req.session.userId}`;
+
   const query =`
-  SELECT * FROM sleep_info
+  SELECT * FROM ${tableName}
   WHERE date BETWEEN ? AND ?
   `;
 
