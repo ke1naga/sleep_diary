@@ -16,10 +16,6 @@ const connection = mysql.createPool({
   database: process.env.DB_NAME
 });
 
-  // ユーザー専用のテーブル名を作成
-  const tableName = `sleep_info_user_${user.id}`;
-
-
 // 非同期接続テスト
 async function testConnection() {
   try {
