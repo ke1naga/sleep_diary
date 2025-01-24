@@ -71,8 +71,8 @@
  <script>
   const base_url = 'https://sleep-diary-5uzz.onrender.com';
 
-  let currentPage = 0; // 現在のページ（データのオフセットを示す）
-  const itemsPerPage = 30; // 1回で取得するデータ件数
+  let currentPage = 1; // 現在のページ（データのオフセットを示す）
+  const itemsPerPage = 20; // 1回で取得するデータ件数
 
       // 認証状態をチェックする関数
       function checkAuthentication() {
@@ -97,17 +97,20 @@
         });
     }
 
-// ページネーションボタンの動作
-function changePage(direction) {
-  if (direction === 'next') {
-    currentPage++;
-  } else if (direction === 'prev' && currentPage > 0) {
-    currentPage--;
+
+// 前のページボタンの処理
+document.getElementById('prevPageBtn').addEventListener('click', function() {
+  if (currentPage > 1) {
+    currentPage--;  // ページを1つ戻す
+    fetchDataInRange(selectedDate, currentPage); // 新しいページデータを取得
   }
-  
-  const selectedDate = document.getElementById('datePicker').value;
-  fetchDataInRange(selectedDate, currentPage); // 新しいページのデータを取得
-}
+});
+
+// 次のページボタンの処理
+document.getElementById('nextPageBtn').addEventListener('click', function() {
+  currentPage++;  // ページを1つ進める
+  fetchDataInRange(selectedDate, currentPage); // 新しいページデータを取得
+});
 
 
   // カレンダー選択時のデータ取得
