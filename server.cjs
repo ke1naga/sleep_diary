@@ -308,7 +308,7 @@ app.get('/getDataInRange', isAuthenticated, async (req, res) => {
 
   // 日付をフォーマットして基準日を設定
   const baseDate = parseISO(date);
-  const startDate = format(new Date(baseDate.getTime() - 30 * 24 * 60 * 60 * 1000), 'yyyy-MM-dd'); // 基準日の30日前
+  const startDate = format(new Date(baseDate.getTime() - 1 * 24 * 60 * 60 * 1000), 'yyyy-MM-dd'); // 基準日の30日前
   const endDate = format(new Date(baseDate.getTime() + 30 * 24 * 60 * 60 * 1000), 'yyyy-MM-dd');   // 基準日の30日後
 
     // ページとリミットを整数に変換
@@ -332,7 +332,7 @@ app.get('/getDataInRange', isAuthenticated, async (req, res) => {
     const hasMore = results.length === pageLimit;
 
     res.json({
-      data:results,// 前後15日間のデータを返す
+      data:results,
       hasMore,//次ページあるか
     });
   } catch (error) {
