@@ -238,7 +238,7 @@ app.post('/saveOrUpdate', isAuthenticated, async(req, res) => {
     mood = VALUES(mood),
     diary = VALUES(diary),
     wake_up_times = VALUES(wake_up_times),
-    bed_times =VALUES(bed_times);
+    bed_times =VALUES(bed_times),
     star = VALUES(star);
   `;
 
