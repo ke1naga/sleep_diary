@@ -464,3 +464,25 @@ function updateChart(data) {
   
     drawGraph(dates, values, values2, bedTimes, wakeUpTimes);  // グラフを更新
 }
+
+document.getElementById("logoutButton").addEventListener("click", function() {
+    // ログアウトリクエストを送信
+    fetch('/logout', {
+      method: 'GET', // ログアウトはGETメソッドで処理
+      credentials: 'same-origin' // セッション情報を送信
+    })
+    .then(response => {
+      if (response.ok) {
+        // ログアウト成功時にリダイレクト
+        window.location.href = '/top.html'; // または任意のページにリダイレクト
+      } else {
+        // エラーハンドリング
+        alert('ログアウトに失敗しました');
+      }
+    })
+    .catch(error => {
+      console.error('エラー:', error);
+      alert('ネットワークエラー');
+    });
+  });
+  

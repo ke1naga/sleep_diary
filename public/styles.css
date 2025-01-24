@@ -46,6 +46,18 @@ nav a{
     min-height:2rem;
 }
 
+.logoutButton{
+    display: inline-block;      /* aタグをインラインブロックにして横並びに */
+    margin-left: 1rem;          /* アイテム間にスペース */
+    text-decoration: none;  /* 下線を消す */
+    color:black;
+    background-color: #c1fffb;
+    padding:0.3rem;
+    border-radius: 8px;
+    min-width: 5rem;
+    min-height:2rem;
+}
+
 /* ホバー時のスタイル */
 nav a:hover {
     background-color: #00b5a3;             /* ホバー時に文字色を変更 */
