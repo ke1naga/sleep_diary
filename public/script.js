@@ -81,6 +81,7 @@ document.getElementById('dataForm').addEventListener('submit', function (event) 
     const date = new Date(dateInput);  // 日付をDateオブジェクトに変換
     const formattedDate = date.toISOString().split('T')[0];  // 'YYYY-MM-DD'形式に変換
     console.log(formattedDate);  // 例: "2025-01-05"
+    
 
     // クライアント側でデータを送信---------
     fetch(`${base_url}/saveOrUpdate`, {

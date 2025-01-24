@@ -26,7 +26,17 @@
     <!--chart.js-->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.8.0/dist/chart.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@1.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
-    </head>
+   <style>
+    /*スクロール可能なテーブル設定 */
+    #dataContainer {
+      max-height: 300px; /*スクロールの高さを調整 */
+      overflow-y: auto;
+      border: 1px solid #ccc;
+      margin-top: 10px;
+    }
+   </style>
+  
+  </head>
     <body>
       <header>
         <h1>Sleep Diary for me</h1>
@@ -40,7 +50,7 @@
           </nav>
       </header>
       <main>
-        <h2>日付を選択(前後約2か月分の表示)</h2>
+        <h2>日付を選択</h2>
         <input type="date" id="datePicker" />
         <div id="dataContainer"></div>
 
@@ -63,6 +73,10 @@
       
         <script>
   const base_url = 'https://sleep-diary-5uzz.onrender.com';
+
+  let currentPage = 0; // 現在のページ（データのオフセットを示す）
+  const itemsPerPage = 10; // 1回で取得するデータ件数
+  let isFetching = false; // データ取得中のフラグ
 
       // 認証状態をチェックする関数
       function checkAuthentication() {
@@ -98,7 +112,7 @@
     const today = new Date();
     const formattedToday = today.toISOString().split('T')[0]; // 今日の日付を 'YYYY-MM-DD'形式にフォーマット
     document.getElementById('datePicker').value = formattedToday; // カレンダーに今日の日付を設定
-    fetchDataInRange(formattedToday); // 昨日を中心にデータを取得
+    fetchDataInRange(formattedToday,currentPage); // 今日もしくは今表示しているとこを中心にデータを取得
   
   });
 };
@@ -119,20 +133,25 @@
       return;
     }
 
-    fetchDataInRange(selectedDate); // 日付に基づいてデータを取得
+    currentPage = 0; // ページをリセット
+    document.getElementById('dataTable').getElementsByTagName('tbody')[0].innerHTML = ''; // テーブルをリセット
+    fetchDataInRange(selectedDate, currentPage); // 選択された日付、今の日付でデータを取得
   
   });
 });
 
   //データを取得する関数
-  function fetchDataInRange(date){
+  function fetchDataInRange(date,page){
 
     checkAuthentication().then(isAuthenticated => {
         if (!isAuthenticated) {
             return;  // 認証されていない場合、処理を中止
         }
 
-    fetch(`${base_url}/getDataInRange?date=${date}`, {
+    if (isFetching) return; // 既にデータ取得中の場合、処理を中止
+    isFetching = true;
+
+    fetch(`${base_url}/getDataInRange?date=${date}&offset=${page*itemPerPage}&limit=${itemsPerPage}`, {
       method: 'GET',
       credentials: 'include', // セッション情報を含む
     })
@@ -145,10 +164,16 @@
       .then(data => {
         console.log('取得したデータ:', data);
         updateTable(data); // テーブルを更新
+        if(data.length>0){
+          currentPage++;// 次のページへ進む
+        }
       })
       .catch(error => {
         console.error('エラー:', error);
         alert('データ取得エラー');
+      })
+      .finally(()=>{
+        isFetching=false;
       });
     });
   }
@@ -156,15 +181,6 @@
   // テーブルを更新する関数
   function updateTable(data) {
     const tableBody = document.getElementById('dataTable').getElementsByTagName('tbody')[0];
-    tableBody.innerHTML = ''; // 既存のデータをクリア
-
-    if (data.length === 0) {
-      const emptyRow = tableBody.insertRow();
-      const emptyCell = emptyRow.insertCell(0);
-      emptyCell.colSpan = 4;
-      emptyCell.textContent = 'データが見つかりません';
-      return;
-    }
 
     // 新しいデータをテーブルに追加
     data.forEach(row => {
@@ -172,9 +188,7 @@
       const dateCell = newRow.insertCell(0);
       const valueCell = newRow.insertCell(1);
       const bedTimesCell =newRow.insertCell(2);
-      bedTimesCell.classList.add('vertical-text');
       const wakeUpTimesCell = newRow.insertCell(3);
-      wakeUpTimesCell.classList.add('vertical-text');
       const moodCell = newRow.insertCell(4);
       const diaryCell = newRow.insertCell(5);
 
@@ -205,6 +219,16 @@
     });
   }
 
+    // スクロールイベントの設定
+    document.getElementById('dataContainer').addEventListener('scroll', function () {
+    const container = this;
+    if (container.scrollTop + container.clientHeight >= container.scrollHeight - 50) {
+      const selectedDate = document.getElementById('datePicker').value;
+      fetchDataInRange(selectedDate, currentPage); // 次のデータを取得
+    }
+  });
+
+  //ログアウト
   document.getElementById("logoutButton").addEventListener("click", function() {
     // ログアウトリクエストを送信
     fetch('/logout', {

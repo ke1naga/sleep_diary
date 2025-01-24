@@ -297,9 +297,10 @@ app.get('/getDataByDate', isAuthenticated, async (req, res) => {
   }
 });
 
-// 前後30日分のデータを取得するエンドポイント
+
+// 前後30日分のデータを取得するエンドポイント(スクロールも)
 app.get('/getDataInRange', isAuthenticated, async (req, res) => {
-  const { date } = req.query;
+  const { date,page=1, limit=10 } = req.query; // クエリパラメータから日付、ページ、リミットを取得
 
   if (!date || !isValidDate(date)) {
     return res.status(400).json({ error: '無効な日付形式です' });
@@ -310,13 +311,29 @@ app.get('/getDataInRange', isAuthenticated, async (req, res) => {
   const startDate = format(new Date(baseDate.getTime() - 30 * 24 * 60 * 60 * 1000), 'yyyy-MM-dd'); // 基準日の30日前
   const endDate = format(new Date(baseDate.getTime() + 30 * 24 * 60 * 60 * 1000), 'yyyy-MM-dd');   // 基準日の30日後
 
+    // ページとリミットを整数に変換
+    const pageNumber = parseInt(page, 10);
+    const pageLimit = parseInt(limit, 10);
+
+    if (isNaN(pageNumber) || isNaN(pageLimit)) {
+      return res.status(400).json({ error: '無効なページ番号またはリミットです' });
+    }
+
+    const offset = (pageNumber - 1) * pageLimit; // オフセットの計算
+
   try {
     const tableName = `sleep_info_user_${req.session.userId}`;
     
-    const query = `SELECT * FROM ${tableName} WHERE date BETWEEN ? AND ? ORDER BY date ASC`;
-    const [results] = await connection.query(query, [startDate, endDate]);
+    const query = `SELECT * FROM ${tableName} WHERE date BETWEEN ? AND ? ORDER BY date ASC LIMIT ? OFFSET ?`;
+    const [results] = await connection.query(query, [startDate, endDate, pageLimit, offset]);
 
-    res.json(results); // 前後15日間のデータを返す
+    // 次のページがあるか確認（取得データ数がlimitと同じであれば次のページがある）
+    const hasMore = results.length === pageLimit;
+
+    res.json({
+      data:results,// 前後15日間のデータを返す
+      hasMore,//次ページあるか
+    });
   } catch (error) {
     console.error('データ取得エラー:', error);
     res.status(500).json({ error: 'データ取得エラー', message: error.message });
