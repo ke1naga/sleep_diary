@@ -458,6 +458,7 @@ function updateChart(data) {
     const values2 = [];
     const bedTimes = [];
     const wakeUpTimes =[];
+    const stars=[];
   
     // データを整理してグラフに表示する形式に整える
     data.forEach(row => {
