@@ -82,8 +82,8 @@ document.getElementById('dataForm').addEventListener('submit', function (event) 
     const formattedDate = date.toISOString().split('T')[0];  // 'YYYY-MM-DD'形式に変換
     console.log(formattedDate);  // 例: "2025-01-05"
 
-    const userId = req.session.userId;  // ログインしているユーザーのID
-    
+    const userId = sessionStorage.getItem('userId');  // 例: セッションストレージから取得
+
     // クライアント側でデータを送信---------
     fetch(`${base_url}/saveOrUpdate`, {
         method: 'POST',
