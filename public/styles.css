@@ -46,7 +46,7 @@ nav a{
     min-height:2rem;
 }
 
-.logoutButton{
+.logout-btn{
     display: inline-block;      /* aタグをインラインブロックにして横並びに */
     margin-left: 1rem;          /* アイテム間にスペース */
     text-decoration: none;  /* 下線を消す */
