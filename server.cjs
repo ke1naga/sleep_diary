@@ -308,7 +308,7 @@ app.get('/getDataInRange', isAuthenticated, async (req, res) => {
 
   // 日付をフォーマットして基準日を設定
   const baseDate = parseISO(date);
-  const startDate = format(new Date(baseDate.getTime() - 50 * 24 * 60 * 60 * 1000), 'yyyy-MM-dd'); 
+  const startDate = format(new Date(baseDate.getTime() - 100 * 24 * 60 * 60 * 1000), 'yyyy-MM-dd'); 
   const endDate = format(new Date(baseDate.getTime() + 5* 24 * 60 * 60 * 1000), 'yyyy-MM-dd');   // 基準日の5日後
 
     // ページとリミットを整数に変換
