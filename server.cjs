@@ -298,7 +298,7 @@ app.get('/getDataByDate', isAuthenticated, async (req, res) => {
 });
 
 
-// 前後30日分のデータを取得するエンドポイント(スクロールも)
+// 日分のデータを取得するエンドポイント
 app.get('/getDataInRange', isAuthenticated, async (req, res) => {
   const { date,page=1, limit=10 } = req.query; // クエリパラメータから日付、ページ、リミットを取得
 
@@ -308,7 +308,7 @@ app.get('/getDataInRange', isAuthenticated, async (req, res) => {
 
   // 日付をフォーマットして基準日を設定
   const baseDate = parseISO(date);
-  const startDate = format(new Date(baseDate.getTime() - 25 * 24 * 60 * 60 * 1000), 'yyyy-MM-dd'); // 基準日の30日前
+  const startDate = format(new Date(baseDate.getTime() - 25 * 24 * 60 * 60 * 1000), 'yyyy-MM-dd'); 
   const endDate = format(new Date(baseDate.getTime() + 5* 24 * 60 * 60 * 1000), 'yyyy-MM-dd');   // 基準日の5日後
 
     // ページとリミットを整数に変換
@@ -328,15 +328,20 @@ app.get('/getDataInRange', isAuthenticated, async (req, res) => {
     const query = `SELECT * FROM ${tableName} WHERE date BETWEEN ? AND ? ORDER BY date ASC LIMIT ? OFFSET ?`;
     const [results] = await connection.query(query, [startDate, endDate, pageLimit, offset]);
 
-    // 次のページがあるか確認（取得データ数がlimitと同じであれば次のページがある）
-    const hasMore = results.length === pageLimit;
+    // 総件数を取得して、次ページや前ページの判定を行う
+    const countQuery = `SELECT COUNT(*) as totalCount FROM ${tableName} WHERE date BETWEEN ? AND ?`;
+    const [[{ totalCount }]] = await connection.query(countQuery, [startDate, endDate]);
 
-        // 前のページがあるか確認（現在のページ番号が1より大きい場合）
-        const hasPrevious = pageNumber > 1;
+    // 次のページがあるか確認（取得データ数がlimitと同じであれば次のページがある）
+    const hasMore = offset+pageLimit<totalCount;
+
+    // 前のページがあるか確認（現在のページ番号が1より大きい場合）
+    const hasPrevious = pageNumber > 1;
 
     res.json({
       data:results,
       hasMore,//次ページあるか
+      hasPrevious,
     });
   } catch (error) {
     console.error('データ取得エラー:', error);
