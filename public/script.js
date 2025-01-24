@@ -317,7 +317,7 @@ function drawGraph(dates, values, values2,bedTimes,wakeUpTimes) {
                 },
                 {
                     label: '☆',
-                    data: menstruationPoints,
+                    data: stars,
                     pointStyle: 'star', // 星マーク
                     pointRadius: 10, // 星のサイズ
                     backgroundColor: 'rgba(239, 255, 67, 0.2)',
