@@ -70,13 +70,18 @@
             <!-- データ行はここに追加されます -->
           </tbody>
         </table>
-      
+
+    <!-- ページネーションボタン -->
+    <div id="paginationControls">
+      <button id="prevPageBtn" onclick="changePage('prev')">前のページ</button>
+      <button id="nextPageBtn" onclick="changePage('next')">次のページ</button>
+    </div>
+
         <script>
   const base_url = 'https://sleep-diary-5uzz.onrender.com';
 
   let currentPage = 0; // 現在のページ（データのオフセットを示す）
-  const itemsPerPage = 10; // 1回で取得するデータ件数
-  let isFetching = false; // データ取得中のフラグ
+  const itemsPerPage = 20; // 1回で取得するデータ件数
 
       // 認証状態をチェックする関数
       function checkAuthentication() {
@@ -101,21 +106,18 @@
         });
     }
 
-
-  // ページロード時の処理
-  window.onload = function () {
-    checkAuthentication().then(isAuthenticated => {
-        if (!isAuthenticated) {
-            return;  // 認証されていない場合、処理を中止
-        }
-
-    const today = new Date();
-    const formattedToday = today.toISOString().split('T')[0]; // 今日の日付を 'YYYY-MM-DD'形式にフォーマット
-    document.getElementById('datePicker').value = formattedToday; // カレンダーに今日の日付を設定
-    fetchDataInRange(formattedToday,currentPage); // 今日もしくは今表示しているとこを中心にデータを取得
+// ページネーションボタンの動作
+function changePage(direction) {
+  if (direction === 'next') {
+    currentPage++;
+  } else if (direction === 'prev' && currentPage > 0) {
+    currentPage--;
+  }
   
-  });
-};
+  const selectedDate = document.getElementById('datePicker').value;
+  fetchDataInRange(selectedDate, currentPage); // 新しいページのデータを取得
+}
+
 
   // カレンダー選択時のデータ取得
   document.getElementById('datePicker').addEventListener('change', function () {
@@ -167,28 +169,31 @@
         if(data.data && data.data.length>0){
           updateTable(data.data); // テーブルを更新
 
-          if(data.hasMore){
-            currentPage++;// 次のページへ進む
-        }else{
-          console.log('これ以上のデータはありません')
+          // 次ページがある場合は「次へ」を有効に、なければ無効にする
+          document.getElementById('nextPageBtn').disabled = !data.hasMore;
+          // 前ページがない場合は「前へ」を無効にする
+          document.getElementById('prevPageBtn').disabled = currentPage === 0;
+        } else {
+          console.log('データが存在しません');
         }
-      }else{
-        console.log('データが存在しません')
-      }
-    })
+      })
       .catch(error => {
         console.error('エラー:', error);
         alert('データ取得エラー');
       })
-      .finally(()=>{
-        isFetching=false;
+      .finally(() => {
+        isFetching = false;
       });
-    });
-  }
+  });
+}
+
 
   // テーブルを更新する関数
   function updateTable(data) {
     const tableBody = document.getElementById('dataTable').getElementsByTagName('tbody')[0];
+
+  // テーブルをクリア
+  tableBody.innerHTML = '';
 
     // 新しいデータをテーブルに追加
     data.forEach(row => {
@@ -227,14 +232,19 @@
     });
   }
 
-    // スクロールイベントの設定
-    document.getElementById('dataContainer').addEventListener('scroll', function () {
-    const container = this;
-    if (container.scrollTop + container.clientHeight >= container.scrollHeight - 50) {
-      const selectedDate = document.getElementById('datePicker').value;
-      fetchDataInRange(selectedDate, currentPage); // 次のデータを取得
+  // ページロード時の処理
+window.onload = function () {
+  checkAuthentication().then(isAuthenticated => {
+    if (!isAuthenticated) {
+      return;  // 認証されていない場合、処理を中止
     }
+
+    const today = new Date();
+    const formattedToday = today.toISOString().split('T')[0]; // 今日の日付を 'YYYY-MM-DD'形式にフォーマット
+    document.getElementById('datePicker').value = formattedToday; // カレンダーに今日の日付を設定
+    fetchDataInRange(formattedToday, currentPage); // 今日もしくは今表示しているとこを中心にデータを取得
   });
+};
 
   //ログアウト
   document.getElementById("logoutButton").addEventListener("click", function() {
