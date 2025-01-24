@@ -203,8 +203,7 @@ function isValidDate(dateString) {
   return isValid(date); //有効な日付かチェック
 }
 
-// データの追加または上書きエンドポイント
-
+// データの追加または上書きエンドポイント--------
 app.post('/saveOrUpdate', isAuthenticated, async(req, res) => {
   const { date, value, mood, diary, user_id, wake_up_times, bed_times} = req.body;
 
