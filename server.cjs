@@ -300,7 +300,7 @@ app.get('/getDataByDate', isAuthenticated, async (req, res) => {
 
 // 前後30日分のデータを取得するエンドポイント(スクロールも)
 app.get('/getDataInRange', isAuthenticated, async (req, res) => {
-  const { date,page=1, limit=20 } = req.query; // クエリパラメータから日付、ページ、リミットを取得
+  const { date,page=1, limit=10 } = req.query; // クエリパラメータから日付、ページ、リミットを取得
 
   if (!date || !isValidDate(date)) {
     return res.status(400).json({ error: '無効な日付形式です' });
@@ -308,7 +308,7 @@ app.get('/getDataInRange', isAuthenticated, async (req, res) => {
 
   // 日付をフォーマットして基準日を設定
   const baseDate = parseISO(date);
-  const startDate = format(new Date(baseDate.getTime() - 30 * 24 * 60 * 60 * 1000), 'yyyy-MM-dd'); // 基準日の30日前
+  const startDate = format(new Date(baseDate.getTime() - 25 * 24 * 60 * 60 * 1000), 'yyyy-MM-dd'); // 基準日の30日前
   const endDate = format(new Date(baseDate.getTime() + 5* 24 * 60 * 60 * 1000), 'yyyy-MM-dd');   // 基準日の5日後
 
     // ページとリミットを整数に変換
