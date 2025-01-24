@@ -82,7 +82,7 @@ document.getElementById('dataForm').addEventListener('submit', function (event) 
     const formattedDate = date.toISOString().split('T')[0];  // 'YYYY-MM-DD'形式に変換
     console.log(formattedDate);  // 例: "2025-01-05"
 
-    const userId = sessionStorage.getItem('userId');  // 例: セッションストレージから取得
+    const userId = 1;
 
     // クライアント側でデータを送信---------
     fetch(`${base_url}/saveOrUpdate`, {
@@ -243,7 +243,7 @@ window.onload = function () {
 // グラフ描画関数
 let chartInstance = null;
 
-function drawGraph(dates, values, values2,bedTimes,wakeUpTimes) {
+function drawGraph(dates, values, values2,bedTimes,wakeUpTimes, stars ) {
     const ctx = document.getElementById('lineChart').getContext('2d');
     console.log('グラフの描画の準備', dates, values, values2); // データ確認
 
@@ -322,7 +322,7 @@ function drawGraph(dates, values, values2,bedTimes,wakeUpTimes) {
                     pointStyle: 'star', // 星マーク
                     pointRadius: 10, // 星のサイズ
                     backgroundColor: 'rgba(239, 255, 67, 0.2)',
-                    borderColor: 'rgb(239, 255, 67)',
+                    borderColor: 'rgb(255, 224, 67)',
                     borderWidth: 1,
                     showLine: false, // 線を非表示
                   },
