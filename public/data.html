@@ -151,7 +151,7 @@
     if (isFetching) return; // 既にデータ取得中の場合、処理を中止
     isFetching = true;
 
-    fetch(`${base_url}/getDataInRange?date=${date}&offset=${page*itemPerPage}&limit=${itemsPerPage}`, {
+    fetch(`${base_url}/getDataInRange?date=${date}&page=${page}&limit=${itemsPerPage}`, {
       method: 'GET',
       credentials: 'include', // セッション情報を含む
     })
@@ -163,8 +163,8 @@
       })
       .then(data => {
         console.log('取得したデータ:', data);
-        updateTable(data); // テーブルを更新
         if(data.length>0){
+          updateTable(data); // テーブルを更新
           currentPage++;// 次のページへ進む
         }
       })
