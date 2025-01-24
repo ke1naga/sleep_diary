@@ -168,12 +168,14 @@ document.getElementById('date').addEventListener('change', function () {
                 document.getElementById('diary').value = data.diary || '';
                 document.getElementById('bed_times').value = data.bed_times || '';
                 document.getElementById('wake_up_times').value = data.wake_up_times || '';
+                document.getElementById('star').checked= data.star===1;
             } else {
                 // データがない場合は空欄にリセット
                 document.getElementById('mood').value = '';
                 document.getElementById('diary').value = '';
                 document.getElementById('bed_times').value = '';
                 document.getElementById('wake_up_times').value = '';
+                document.getElementById('star').checked = false;
             }
         })
         .catch(error => {
