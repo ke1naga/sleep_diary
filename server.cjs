@@ -319,7 +319,8 @@ app.get('/getDataInRange', isAuthenticated, async (req, res) => {
       return res.status(400).json({ error: '無効なページ番号またはリミットです' });
     }
 
-    const offset = (pageNumber - 1) * pageLimit; // オフセットの計算
+
+    const offset = Math.max(0, (pageNumber - 1) * pageLimit); // OFFSET が負の数にならないように
 
   try {
     const tableName = `sleep_info_user_${req.session.userId}`;
