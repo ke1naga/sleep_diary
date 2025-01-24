@@ -274,6 +274,8 @@ function drawGraph(dates, values, values2,bedTimes,wakeUpTimes, stars ) {
         return null;
     });
 
+    // stars が 0 の場合は null にする
+    const starsData = stars.map(star => star === 0 ? null : star);
 
     chartInstance = new Chart(ctx, {
         type: 'line',
@@ -318,7 +320,7 @@ function drawGraph(dates, values, values2,bedTimes,wakeUpTimes, stars ) {
                 },
                 {
                     label: '☆',
-                    data: stars,
+                    data: starsData,
                     pointStyle: 'star', // 星マーク
                     pointRadius: 10, // 星のサイズ
                     backgroundColor: 'rgba(239, 255, 67, 0.2)',
