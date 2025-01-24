@@ -327,7 +327,7 @@ function drawGraph(dates, values, values2,bedTimes,wakeUpTimes, stars ) {
                     pointStyle: 'star', // 星マーク
                     pointRadius: 10, // 星のサイズ
                     backgroundColor: 'rgba(255, 177, 67, 0.2)',
-                    borderColor: 'rgb(247, 126, 39)',
+                    borderColor: 'rgb(255, 183, 74)',
                     borderWidth: 1,
                     showLine: false, // 線を非表示
                   },

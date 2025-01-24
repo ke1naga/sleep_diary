@@ -58,6 +58,10 @@ nav a{
     min-height:2rem;
 }
 
+.logout-btn:hover{
+    background-color:#8052ff ;
+}
+
 /* ホバー時のスタイル */
 nav a:hover {
     background-color: #00b5a3;             /* ホバー時に文字色を変更 */
