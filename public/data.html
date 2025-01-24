@@ -73,6 +73,7 @@
 
   let currentPage = 1; // 現在のページ（データのオフセットを示す）
   const itemsPerPage = 30; // 1回で取得するデータ件数
+  let selectedDate = ''; // selectedDateをグローバルで保持
 
       // 認証状態をチェックする関数----------------------------
       function checkAuthentication() {
@@ -97,19 +98,24 @@
         });
     }
 
+      // ページ変更処理---------------------------
+  function changePage(direction) {
+    if (direction === 'next') {
+      currentPage++;  // ページを1つ進める
+    } else if (direction === 'prev' && currentPage > 1) {
+      currentPage--;  // ページを1つ戻す
+    }
+    fetchDataInRange(selectedDate, currentPage); // 新しいページデータを取得
+  }
 
 // 前のページボタンの処理----------------------
 document.getElementById('prevPageBtn').addEventListener('click', function() {
-  if (currentPage > 1) {
-    currentPage--;  // ページを1つ戻す
-    fetchDataInRange(selectedDate, currentPage); // 新しいページデータを取得
-  }
+  changePage('prev');
 });
 
 // 次のページボタンの処理
 document.getElementById('nextPageBtn').addEventListener('click', function() {
-  currentPage++;  // ページを1つ進める
-  fetchDataInRange(selectedDate, currentPage); // 新しいページデータを取得
+  changePage('next');
 });
 
 
@@ -140,14 +146,13 @@ let isFetching = false;  // ここでisFetchingを宣言
 
   //データを取得する関数
   function fetchDataInRange(date,page){
+    if (isFetching) return; // 既にデータ取得中の場合、処理を中止
+    isFetching = true;
 
     checkAuthentication().then(isAuthenticated => {
         if (!isAuthenticated) {
             return;  // 認証されていない場合、処理を中止
         }
-
-    if (isFetching) return; // 既にデータ取得中の場合、処理を中止
-    isFetching = true;
 
     fetch(`${base_url}/getDataInRange?date=${date}&page=${page}&limit=${itemsPerPage}`, {
       method: 'GET',
