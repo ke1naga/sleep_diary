@@ -82,15 +82,13 @@ document.getElementById('dataForm').addEventListener('submit', function (event) 
     const formattedDate = date.toISOString().split('T')[0];  // 'YYYY-MM-DD'形式に変換
     console.log(formattedDate);  // 例: "2025-01-05"
 
-    const userId = 1;
-
     // クライアント側でデータを送信---------
     fetch(`${base_url}/saveOrUpdate`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'  // JSONデータを送信
         },
-        body: JSON.stringify({ date: formattedDate, value: sleepDuration, mood: mood, diary: diary, user_id:userId, bed_times:bed_times, wake_up_times:wake_up_times, star:star })  // 送信するデータ
+        body: JSON.stringify({ date: formattedDate, value: sleepDuration, mood: mood, diary: diary, bed_times:bed_times, wake_up_times:wake_up_times, star:star })  // 送信するデータ
     })
     .then(response => {
         if (!response.ok) {
