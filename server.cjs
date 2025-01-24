@@ -191,7 +191,8 @@ app.get('/logout', (req, res) => {
     if (err) {
       return res.send('ログアウトに失敗しました');
     }
-    res.redirect('/top.html'); // ログアウト後、ログインページにリダイレクト
+    res.clearCookie('connect.sid');
+    res.redirect('/index.html'); // ログアウト後、ログインページにリダイレクト
   });
 });
 

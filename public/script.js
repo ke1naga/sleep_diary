@@ -474,7 +474,7 @@ document.getElementById("logoutButton").addEventListener("click", function() {
     .then(response => {
       if (response.ok) {
         // ログアウト成功時にリダイレクト
-        window.location.href = '/top.html'; // または任意のページにリダイレクト
+        window.location.href = '/index.html'; // または任意のページにリダイレクト
       } else {
         // エラーハンドリング
         alert('ログアウトに失敗しました');
