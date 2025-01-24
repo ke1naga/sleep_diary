@@ -82,6 +82,24 @@ document.getElementById('dataForm').addEventListener('submit', function (event) 
     const formattedDate = date.toISOString().split('T')[0];  // 'YYYY-MM-DD'形式に変換
     console.log(formattedDate);  // 例: "2025-01-05"
 
+    function getUserIdFromCookie() {
+        const cookies = document.cookie.split(';');
+        for (let cookie of cookies) {
+          const [name, value] = cookie.split('=');
+          if (name.trim() === 'userId') {
+            return value; // クッキーに保存された userId を返す
+          }
+        }
+        return null;
+      }
+      
+      const userId = getUserIdFromCookie();
+      if (userId) {
+        console.log('ユーザーID:', userId);
+      } else {
+        console.log('クッキーにユーザーIDがありません');
+      }
+
 
     // クライアント側でデータを送信---------
     fetch(`${base_url}/saveOrUpdate`, {
