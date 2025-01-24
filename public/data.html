@@ -36,8 +36,8 @@
               <li><a href="graph.html">グラフ</a></li>
               <li><a href="data.html">データ</a></li>
               <li><a href="index.html">TOP</a></li>
-              <button id="logoutButton" class="logout-btn">ログアウト</button>
             </ul>
+              <button id="logoutButton" class="logout-btn">ログアウト</button>
           </nav>
       </header>
       <main>
@@ -130,12 +130,13 @@ document.getElementById('nextPageBtn').addEventListener('click', function() {
     const selectedDate = this.value; // カレンダーで選択した日付
     console.log('選択された日付:', selectedDate);
 
+    selectedDate = this.value;
     if (!selectedDate) {
       alert('日付を選択してください。');
       return;
     }
 
-    currentPage = 0; // ページをリセット
+    currentPage = 1; // ページをリセット
     document.getElementById('dataTable').getElementsByTagName('tbody')[0].innerHTML = ''; // テーブルをリセット
     fetchDataInRange(selectedDate, currentPage); // 選択された日付、今の日付でデータを取得
   
@@ -146,6 +147,12 @@ let isFetching = false;  // ここでisFetchingを宣言
 
   //データを取得する関数
   function fetchDataInRange(date,page){
+    if (!date) {
+    console.error('日付が設定されていません');
+    alert('日付を選択してください');
+    return;
+  }
+
     if (isFetching) return; // 既にデータ取得中の場合、処理を中止
     isFetching = true;
 
@@ -173,7 +180,7 @@ let isFetching = false;  // ここでisFetchingを宣言
           // 次ページがある場合は「次へ」を有効に、なければ無効にする
           document.getElementById('nextPageBtn').disabled = !data.hasMore;
           // 前ページがない場合は「前へ」を無効にする
-          document.getElementById('prevPageBtn').disabled = currentPage === 0;
+          document.getElementById('prevPageBtn').disabled = currentPage === 1;
         } else {
           console.log('データが存在しません');
         }
@@ -250,7 +257,7 @@ window.onload = function () {
   //ログアウト----------------------------
   document.getElementById("logoutButton").addEventListener("click", function() {
     // ログアウトリクエストを送信
-    fetch('/logout', {
+    fetch(`${base_url}/logout`, {
       method: 'GET', // ログアウトはGETメソッドで処理
       credentials: 'same-origin' // セッション情報を送信
     })
