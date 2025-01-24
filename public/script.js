@@ -162,21 +162,22 @@ document.getElementById('date').addEventListener('change', function () {
         .then(data => {
             console.log('取得したデータ:', data);
 
-            if (data) {
-                // 取得したデータを入力欄にセット
-                document.getElementById('mood').value = data.mood || '';
-                document.getElementById('diary').value = data.diary || '';
-                document.getElementById('bed_times').value = data.bed_times || '';
-                document.getElementById('wake_up_times').value = data.wake_up_times || '';
-                document.getElementById('star').checked= data.star===1;
-            } else {
-                // データがない場合は空欄にリセット
-                document.getElementById('mood').value = '';
-                document.getElementById('diary').value = '';
-                document.getElementById('bed_times').value = '';
-                document.getElementById('wake_up_times').value = '';
-                document.getElementById('star').checked = false;
-            }
+        // データが存在しない場合は、入力欄をリセット
+        if (!data) {
+            document.getElementById('mood').value = '';
+            document.getElementById('diary').value = '';
+            document.getElementById('bed_times').value = '';
+            document.getElementById('wake_up_times').value = '';
+            document.getElementById('star').checked = false;  // チェックボックスを外す
+        } else {
+            // 取得したデータを入力欄にセット
+            document.getElementById('mood').value = data.mood || '';
+            document.getElementById('diary').value = data.diary || '';
+            document.getElementById('bed_times').value = data.bed_times || '';
+            document.getElementById('wake_up_times').value = data.wake_up_times || '';
+            document.getElementById('star').checked = data.star === 1;
+        }
+           
         })
         .catch(error => {
             console.error('エラー:', error);
@@ -325,8 +326,8 @@ function drawGraph(dates, values, values2,bedTimes,wakeUpTimes, stars ) {
                     data: starsData,
                     pointStyle: 'star', // 星マーク
                     pointRadius: 10, // 星のサイズ
-                    backgroundColor: 'rgba(239, 255, 67, 0.2)',
-                    borderColor: 'rgb(255, 224, 67)',
+                    backgroundColor: 'rgba(255, 177, 67, 0.2)',
+                    borderColor: 'rgb(247, 126, 39)',
                     borderWidth: 1,
                     showLine: false, // 線を非表示
                   },
