@@ -163,16 +163,19 @@
       })
       .then(data => {
         console.log('取得したデータ:', data);
-        if(data.data.length>0){
+
+        if(data.data && data.data.length>0){
           updateTable(data.data); // テーブルを更新
+
           if(data.hasMore){
             currentPage++;// 次のページへ進む
+        }else{
+          console.log('これ以上のデータはありません')
         }
+      }else{
+        console.log('データが存在しません')
       }
-        if (!data.hasMore) {
-          console.log('これ以上のデータはありません');
-      }
-      })
+    })
       .catch(error => {
         console.error('エラー:', error);
         alert('データ取得エラー');
