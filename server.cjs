@@ -341,6 +341,7 @@ app.get('/getDataInRange', isAuthenticated, async (req, res) => {
   }
 });
 
+
 //グラフの期間指定
 app.get('/getDataInRange2', async(req, res) => {
   const { start, end } = req.query; // クエリパラメータから範囲を取得

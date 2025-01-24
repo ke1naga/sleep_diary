@@ -26,15 +26,6 @@
     <!--chart.js-->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.8.0/dist/chart.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@1.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
-   <style>
-    /*スクロール可能なテーブル設定 */
-    #dataContainer {
-      max-height: 300px; /*スクロールの高さを調整 */
-      overflow-y: auto;
-      border: 1px solid #ccc;
-      margin-top: 10px;
-    }
-   </style>
   
   </head>
     <body>
@@ -77,7 +68,7 @@
       <button id="nextPageBtn" onclick="changePage('next')">次のページ</button>
     </div>
 
-        <script>
+ <script>
   const base_url = 'https://sleep-diary-5uzz.onrender.com';
 
   let currentPage = 0; // 現在のページ（データのオフセットを示す）
@@ -141,6 +132,8 @@ function changePage(direction) {
   
   });
 });
+
+let isFetching = false;  // ここでisFetchingを宣言
 
   //データを取得する関数
   function fetchDataInRange(date,page){
