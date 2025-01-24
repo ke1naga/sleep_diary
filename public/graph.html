@@ -26,6 +26,13 @@
   <!--chart.js-->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@3.8.0/dist/chart.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@1.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+<style>
+  input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  accent-color: rgb(225, 0, 255); /* チェック時の色 */
+}
+</style>
 </head>
 <body>
   <header>
@@ -64,6 +71,10 @@
       <div onclick="focusTextarea('diary')">
         <label for="diary">日記:</label>
         <textarea class="diary" id="diary"></textarea>
+      </div>
+      <div>
+        <label for="star">☆</label>
+        <input type="checkbox" id="star" name="star">
       </div>
       <button type="submit">保存</button>
     </form>

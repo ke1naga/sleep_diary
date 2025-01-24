@@ -162,6 +162,7 @@ app.post('/login', async (req, res) => {
           user_id INT NOT NULL,
           wake_up_times TIME,
           bed_times TIME,
+          star INTEGER DEFAULT 0,
           UNIQUE(date, user_id),
           FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
         );
@@ -206,9 +207,9 @@ function isValidDate(dateString) {
 
 // データの追加または上書きエンドポイント--------
 app.post('/saveOrUpdate', isAuthenticated, async(req, res) => {
-  const { date, value, mood, diary, user_id, wake_up_times, bed_times} = req.body;
+  const { date, value, mood, diary, user_id, wake_up_times, bed_times, star} = req.body;
 
-  console.log('受け取ったデータ:', { date, value, mood, diary, user_id, wake_up_times, bed_times});  // ここで確認
+  console.log('受け取ったデータ:', { date, value, mood, diary, user_id, wake_up_times, bed_times, star});  // ここで確認
 
   if (!date || !isValidDate(date)) {
     return res.status(400).json({ error: '無効な日付形式です' });
@@ -230,20 +231,21 @@ app.post('/saveOrUpdate', isAuthenticated, async(req, res) => {
    const tableName = `sleep_info_user_${req.session.userId}`;
 
   const query = `
-    INSERT INTO ${tableName} (date, value, mood, diary, user_id, wake_up_times, bed_times )
-    VALUES (?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO ${tableName} (date, value, mood, diary, user_id, wake_up_times, bed_times, star )
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     ON DUPLICATE KEY UPDATE
     value = VALUES(value),
     mood = VALUES(mood),
     diary = VALUES(diary),
     wake_up_times = VALUES(wake_up_times),
     bed_times =VALUES(bed_times);
+    star = VALUES(star);
   `;
 
   const userId = req.session.userId;
 
   try {
-    const [result] = await connection.query(query, [formattedDate, value, mood, diary, userId, formattedWakeUpTime, formattedBedTime]);
+    const [result] = await connection.query(query, [formattedDate, value, mood, diary, userId, formattedWakeUpTime, formattedBedTime, star]);
     console.log('データ保存または更新成功:', result);
     res.json({ message: 'データが保存または更新されました', result });
   } catch (error) {

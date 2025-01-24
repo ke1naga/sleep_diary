@@ -62,6 +62,7 @@ document.getElementById('dataForm').addEventListener('submit', function (event) 
     const wake_up_times = document.getElementById('wake_up_times').value;
     const mood = parseFloat(document.getElementById('mood').value);  // 入力された気分スコア(数値に変換）
     const diary =document.getElementById('diary').value; //入力された日記
+    const star = document.getElementById('star').checked ? 1 : 0;
 
     //睡眠時間計算について
     let sleepDuration;
@@ -75,7 +76,7 @@ document.getElementById('dataForm').addEventListener('submit', function (event) 
         }
 
     // 入力データのログを追加
-    console.log('送信するデータ:', { date: dateInput, value: sleepDuration, mood: mood, diary:diary, bed_times:bed_times, wake_up_times: wake_up_times });
+    console.log('送信するデータ:', { date: dateInput, value: sleepDuration, mood: mood, diary:diary, bed_times:bed_times, wake_up_times: wake_up_times, star:star });
 
     const date = new Date(dateInput);  // 日付をDateオブジェクトに変換
     const formattedDate = date.toISOString().split('T')[0];  // 'YYYY-MM-DD'形式に変換
@@ -83,13 +84,12 @@ document.getElementById('dataForm').addEventListener('submit', function (event) 
 
 
     // クライアント側でデータを送信---------
-    const userId = 1;  // ログイン中のユーザーID
     fetch(`${base_url}/saveOrUpdate`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'  // JSONデータを送信
         },
-        body: JSON.stringify({ date: formattedDate, value: sleepDuration, mood: mood, diary: diary, user_id:userId, bed_times:bed_times, wake_up_times:wake_up_times })  // 送信するデータ
+        body: JSON.stringify({ date: formattedDate, value: sleepDuration, mood: mood, diary: diary, user_id:userId, bed_times:bed_times, wake_up_times:wake_up_times, star:star })  // 送信するデータ
     })
     .then(response => {
         if (!response.ok) {
@@ -110,6 +110,7 @@ document.getElementById('dataForm').addEventListener('submit', function (event) 
             diaries[index] = diary;
             bedTimes[index] =bed_times;
             wakeUpTimes[index] = wake_up_times;
+            stars[index]= star;
         } else {
             // 新しい日付なら追加
             dates.push(formattedDate);
@@ -118,12 +119,13 @@ document.getElementById('dataForm').addEventListener('submit', function (event) 
             diaries.push(diary);
             bedTimes.push(bed_times);
             wakeUpTimes.push(wake_up_times);
+            stars.push(star);
         }
 
         // データが保存された後にグラフを更新
         // 既存のデータに新しいデータを追加
-        console.log(dates, values, values2, diaries,bedTimes, wakeUpTimes); // データが正しく渡されているか確認
-        drawGraph(dates, values, values2, bedTimes, wakeUpTimes);  // 新しいデータでグラフ更新
+        console.log(dates, values, values2, diaries,bedTimes, wakeUpTimes, stars); // データが正しく渡されているか確認
+        drawGraph(dates, values, values2, bedTimes, wakeUpTimes, stars);  // 新しいデータでグラフ更新
         window.location.href = '/graph.html';
     })
     .catch(error => {
@@ -187,6 +189,7 @@ let values2 = [];
 let diaries = [];
 let bedTimes = [];
 let wakeUpTimes = [];
+let stars = [];
 
 // ページロード時に保存されたデータを取得してグラフを描画
 window.onload = function () {
@@ -217,13 +220,14 @@ window.onload = function () {
             diaries = sortedData.map(entry => entry.diary); // 日記データを取得
             bedTimes = sortedData.map(entry => entry.bed_times);
             wakeUpTimes = sortedData.map(entry => entry.wake_up_times);
+            stars = sortedData.filter(entry => entry.star === 1).map(entry => entry.date);
 
             console.log('変換後の日付:', dates);
             console.log('変換後の値:', values);
             console.log('変換後の気分スコア:', values2);
 
             if (dates.length > 0) {
-                drawGraph(dates, values, values2,bedTimes,wakeUpTimes); // グラフを描画
+                drawGraph(dates, values, values2,bedTimes,wakeUpTimes, stars); // グラフを描画
             } else {
                 console.log('グラフ描画するデータがありません')
             }
@@ -252,7 +256,7 @@ function drawGraph(dates, values, values2,bedTimes,wakeUpTimes) {
     }
 
 
-    // 起床時間と就寝時間を分単位で変換
+    // 起床時間と就寝時間を分単位で変換（グラフに表記するため）
     const bedTimesInMinutes = bedTimes.map(time => {
         if(time && time.includes(':')){
         const [hours, minutes] = time.split(':').map(Number);
@@ -310,7 +314,17 @@ function drawGraph(dates, values, values2,bedTimes,wakeUpTimes) {
                     tension: 0.1,
                     borderDash: [5, 5],  // 点線にする
                     yAxisID: 'y2'  // 別のY軸を使う設定（オプション）
-                }
+                },
+                {
+                    label: '☆',
+                    data: menstruationPoints,
+                    pointStyle: 'star', // 星マーク
+                    pointRadius: 10, // 星のサイズ
+                    backgroundColor: 'rgba(239, 255, 67, 0.2)',
+                    borderColor: 'rgb(239, 255, 67)',
+                    borderWidth: 1,
+                    showLine: false, // 線を非表示
+                  },
             ]
         },
         options: {
@@ -455,6 +469,7 @@ function updateChart(data) {
       values2.push(row.mood);
       bedTimes.push(row.bed_times);
       wakeUpTimes.push(row.wake_up_times);
+      stars.push(row.star);
     });
 
        // グラフを描画前に既存のグラフインスタンスをリセット
@@ -462,7 +477,7 @@ function updateChart(data) {
         chartInstance.destroy();  // 既存のチャートを破棄
     }
   
-    drawGraph(dates, values, values2, bedTimes, wakeUpTimes);  // グラフを更新
+    drawGraph(dates, values, values2, bedTimes, wakeUpTimes, stars);  // グラフを更新
 }
 
 document.getElementById("logoutButton").addEventListener("click", function() {
