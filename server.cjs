@@ -21,6 +21,8 @@ const connection = mysql.createPool({
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
   connectTimeout: 10000, // 10秒で接続タイムアウト
+  connectionLimit: 5,      // プール内で使用する接続の上限
+  idleTimeout: 10000,       // アイデル接続を閉じるまでの時間（ミリ秒）
 });
 
 // 非同期接続テスト
@@ -58,15 +60,11 @@ app.use(session({
 // セッションの有効期限が切れたときに接続プールを閉じる処理
 app.use((req, res, next) => {
   // セッションが無効（期限切れ）になった場合
-  if (!req.session.loggedIn && connection) {
+  if (!req.session.loggedIn) {
     console.log('セッションが切れたので接続プールを閉じます');
-    try {
-      connection.end(); // 接続プールを閉じる
-      console.log('接続プールを閉じました');
-    } catch (error) {
-      console.error('接続プールを閉じる際のエラー:', error);
+      connection.end().catch (err =>
+      console.error('接続プールを閉じる際のエラー:', err));
     }
-  }
   next();
 });
 
@@ -150,8 +148,8 @@ app.post('/login', async (req, res) => {
   }
 
   try {
- // ユーザーの情報をデータベースから取得
- const [rows] = await connection.query('SELECT * FROM users WHERE username = ?', [username]);
+    // ユーザーの情報をデータベースから取得
+    const [rows] = await connection.query('SELECT * FROM users WHERE username = ?', [username]);
 
 
     if (rows.length === 0) {
@@ -159,7 +157,6 @@ app.post('/login', async (req, res) => {
     }
 
     const user = rows[0];
-
     // パスワードを比較
     const isMatch = await bcrypt.compare(password, user.password);
 
