@@ -151,7 +151,7 @@ app.post('/login', async (req, res) => {
 
   try {
  // ユーザーの情報をデータベースから取得
- const [rows] = await connection.promise().query('SELECT * FROM users WHERE username = ?', [username]);
+ const [rows] = await connection.query('SELECT * FROM users WHERE username = ?', [username]);
 
 
     if (rows.length === 0) {
