@@ -98,8 +98,15 @@
         });
     }
 
-      // ページ変更処理---------------------------
+// ページ変更処理---------------------------
   function changePage(direction) {
+  // 日付が選択されていない場合、今日の日付をセット
+  if (!selectedDate) {
+    const today = new Date();
+    selectedDate = today.toISOString().split('T')[0]; // 'YYYY-MM-DD' 形式にフォーマット
+    document.getElementById('datePicker').value = selectedDate; // カレンダーにも反映
+  }
+
     if (direction === 'next') {
       currentPage++;  // ページを1つ進める
     } else if (direction === 'prev' && currentPage > 1) {
@@ -108,12 +115,12 @@
     fetchDataInRange(selectedDate, currentPage); // 新しいページデータを取得
   }
 
-// 前のページボタンの処理----------------------
+// 最近へボタンの処理----------------------
 document.getElementById('prevPageBtn').addEventListener('click', function() {
   changePage('prev');
 });
 
-// 次のページボタンの処理
+// 過去へボタンの処理
 document.getElementById('nextPageBtn').addEventListener('click', function() {
   changePage('next');
 });
@@ -148,11 +155,16 @@ let isFetching = false;  // ここでisFetchingを宣言
   //データを取得する関数
   function fetchDataInRange(date,page){
     if (!date) {
+      const today = new Date();
+      date = today.toISOString().split('T')[0]; // 'YYYY-MM-DD' 形式にフォーマット
+      document.getElementById('datePicker').value = date; // カレンダーにも反映
+  }
+  if (!date) {
     console.error('日付が設定されていません');
     alert('日付を選択してください');
     return;
   }
-
+  
     if (isFetching) return; // 既にデータ取得中の場合、処理を中止
     isFetching = true;
 
