@@ -9,6 +9,12 @@ const cors = require('cors');
 
 require('dotenv').config();  // dotenvを読み込む
 
+
+// /health エンドポイント
+app.get('/health', (req, res) => {
+  res.status(200).send('Server is healthy!');
+});
+
 const connection = mysql.createPool({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
@@ -29,14 +35,14 @@ async function testConnection() {
 }
 testConnection();
 
-// 静的ファイルを提供
-app.use(express.static('public')); // 'public' フォルダ内の静的ファイルを提供
-
 // URLエンコードされたデータをパース
 app.use(express.urlencoded({ extended: true })); 
 
 app.use(cors()); // 全てのリクエストを許可
 app.use(express.json()); // JSON
+
+// 静的ファイルを提供
+app.use(express.static('public')); 
 
 // セッション設定
 app.use(session({
@@ -307,7 +313,7 @@ app.get('/getDataByDate', isAuthenticated, async (req, res) => {
 });
 
 
-// 日分のデータを取得するエンドポイント
+// なん日分かのデータを取得するエンドポイント
 app.get('/getDataInRange', isAuthenticated, async (req, res) => {
   const { date,page=1, limit=10 } = req.query; // クエリパラメータから日付、ページ、リミットを取得
 
