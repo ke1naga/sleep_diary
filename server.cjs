@@ -200,14 +200,9 @@ app.get('/logout', async(req, res) => {
       return res.send('ログアウトに失敗しました');
     }
     res.clearCookie('connect.sid');
-  });
-  try {
-    console.log('データベース接続を解放しました');
-  } catch (error) {
-    console.error('データベース解放エラー:', error);
-  }
 
   res.redirect('/index.html'); // ログアウト後、ログインページにリダイレクト
+});
 });
 
 //日付がただしいかどうか
