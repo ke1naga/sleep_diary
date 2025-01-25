@@ -150,9 +150,9 @@ app.post('/login', async (req, res) => {
   }
 
   try {
-    // データベースからユーザー情報を取得
-    const query = 'SELECT * FROM users WHERE username = ?';
-    const [rows] = await connection.query(query, [username]);
+ // ユーザーの情報をデータベースから取得
+ const [rows] = await connection.promise().query('SELECT * FROM users WHERE username = ?', [username]);
+
 
     if (rows.length === 0) {
       return res.status(404).json({ error: 'ユーザーが見つかりません' });
