@@ -56,20 +56,6 @@ app.use(session({
   }
 }));
 
-
-// セッションの有効期限が切れたときに接続プールを閉じる処理
-app.use((req, res, next) => {
-  // セッションが無効（期限切れ）になった場合
-  if (!req.session.loggedIn) {
-    console.log('セッションが切れたので接続プールを閉じます');
-      connection.end().catch (err =>
-      console.error('接続プールを閉じる際のエラー:', err));
-    }
-  next();
-});
-
-
-
 // ログインが必要なエンドポイント用のミドルウェア
 function isAuthenticated(req, res, next) {
   if (req.session.loggedIn) {
