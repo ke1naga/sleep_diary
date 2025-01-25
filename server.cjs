@@ -43,7 +43,7 @@ app.use(session({
   resave: false,
   saveUninitialized: true,
   cookie: {
-    maxAge: 3600000 // セッションの有効期限を1時間に設定
+    maxAge: 1800000 // セッションの有効期限を0.5時間に設定
   }
 }));
 
@@ -187,14 +187,22 @@ app.post('/login', async (req, res) => {
 
 
 // ログアウト処理
-app.get('/logout', (req, res) => {
+app.get('/logout', async(req, res) => {
   req.session.destroy((err) => {
     if (err) {
       return res.send('ログアウトに失敗しました');
     }
     res.clearCookie('connect.sid');
-    res.redirect('/index.html'); // ログアウト後、ログインページにリダイレクト
   });
+  try {
+    // 接続プールを解放
+    await connection.end();
+    console.log('データベース接続を解放しました');
+  } catch (error) {
+    console.error('データベース解放エラー:', error);
+  }
+
+  res.redirect('/index.html'); // ログアウト後、ログインページにリダイレクト
 });
 
 //日付がただしいかどうか
