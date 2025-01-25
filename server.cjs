@@ -20,7 +20,7 @@ const connection = mysql.createPool({
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
-  connectTimeout: 30000, // 30秒で接続タイムアウト
+  connectTimeout: 10000, // 10秒で接続タイムアウト
 });
 
 // 非同期接続テスト
@@ -53,6 +53,23 @@ app.use(session({
     maxAge: 1800000 // セッションの有効期限を0.5時間に設定
   }
 }));
+
+
+// セッションの有効期限が切れたときに接続プールを閉じる処理
+app.use((req, res, next) => {
+  // セッションが無効（期限切れ）になった場合
+  if (!req.session.loggedIn && connection) {
+    console.log('セッションが切れたので接続プールを閉じます');
+    try {
+      connection.end(); // 接続プールを閉じる
+      console.log('接続プールを閉じました');
+    } catch (error) {
+      console.error('接続プールを閉じる際のエラー:', error);
+    }
+  }
+  next();
+});
+
 
 
 // ログインが必要なエンドポイント用のミドルウェア
@@ -403,6 +420,19 @@ process.on('SIGINT', async () => {
     process.exit(0);
   } catch (err) {
     console.error('プール終了エラー:', err);
+    process.exit(1);
+  }
+});
+
+
+// 他の終了イベントにも対応する
+process.on('SIGTERM', async () => {
+  try {
+    await connection.end();
+    console.log('サーバーが終了しました');
+    process.exit(0);
+  } catch (err) {
+    console.error('接続プール終了エラー:', err);
     process.exit(1);
   }
 });
