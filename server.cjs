@@ -202,8 +202,6 @@ app.get('/logout', async(req, res) => {
     res.clearCookie('connect.sid');
   });
   try {
-    // 接続プールを解放
-    await connection.end();
     console.log('データベース接続を解放しました');
   } catch (error) {
     console.error('データベース解放エラー:', error);
