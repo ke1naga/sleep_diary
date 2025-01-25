@@ -50,7 +50,6 @@ function calculateSleepDuration(bedTime, wakeUpTime) {
 document.getElementById('dataForm').addEventListener('submit', function (event) {
     event.preventDefault(); // フォーム送信を防ぐ
 
-
     // 認証チェック
     checkAuthentication().then(isAuthenticated => {
         if (!isAuthenticated) {
