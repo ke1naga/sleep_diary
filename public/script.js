@@ -188,7 +188,6 @@ document.getElementById('date').addEventListener('change', function () {
 let dates = [];
 let values = [];
 let values2 = [];
-let diaries = [];
 let bedTimes = [];
 let wakeUpTimes = [];
 let stars = [];
@@ -219,7 +218,6 @@ window.onload = function () {
 
             values = sortedData.map(entry => entry.value);
             values2 = sortedData.map(entry => entry.mood);
-            diaries = sortedData.map(entry => entry.diary); // 日記データを取得
             bedTimes = sortedData.map(entry => entry.bed_times);
             wakeUpTimes = sortedData.map(entry => entry.wake_up_times);
             stars = sortedData.filter(entry => entry.star === 1).map(entry => entry.date);

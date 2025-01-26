@@ -315,7 +315,7 @@ app.get('/getDataByDate', isAuthenticated, async (req, res) => {
 });
 
 
-// なん日分かのデータを取得するエンドポイント
+// data.html なん日分かのデータを取得するエンドポイント
 app.get('/getDataInRange', isAuthenticated, async (req, res) => {
   const { date,page=1, limit=10 } = req.query; // クエリパラメータから日付、ページ、リミットを取得
 
@@ -325,7 +325,7 @@ app.get('/getDataInRange', isAuthenticated, async (req, res) => {
 
   // 日付をフォーマットして基準日を設定
   const baseDate = parseISO(date);
-  const startDate = format(new Date(baseDate.getTime() - 100 * 24 * 60 * 60 * 1000), 'yyyy-MM-dd'); 
+  const startDate = format(new Date(baseDate.getTime() - 25 * 24 * 60 * 60 * 1000), 'yyyy-MM-dd'); 
   const endDate = format(new Date(baseDate.getTime() + 5* 24 * 60 * 60 * 1000), 'yyyy-MM-dd');   // 基準日の5日後
 
     // ページとリミットを整数に変換
