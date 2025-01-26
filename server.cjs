@@ -10,7 +10,7 @@ const cors = require('cors');
 require('dotenv').config();  // dotenvを読み込む
 
 
-// /health エンドポイント-------------
+// GAS用/health エンドポイント-------------
 app.get('/health', (req, res) => {
   res.status(200).send('Server is healthy!');
 });
@@ -29,12 +29,15 @@ const connection = mysql.createPool({
 
 // 非同期接続テスト-------
 async function testConnection() {
+  const connection2 = await connection.getConnection();
   try {
     const [rows] = await connection.query('SELECT 1');
     console.log('データベース接続成功:', rows);
   } catch (error) {
     console.error('データベース接続エラー:', error);
     process.exit(1); // エラー時はプロセス終了
+  }finally {
+    connection2.release(); // 接続を解放
   }
 }
 testConnection();
@@ -97,6 +100,8 @@ app.post('/register', async (req, res) => {
     return res.status(400).json({ error: 'ユーザー名とパスワードは必須です' });
   }
 
+  const connection2 = await connection.getConnection();
+
   try {
     // パスワードをハッシュ化
     const hashedPassword = await bcrypt.hash(password, 5);
@@ -110,6 +115,8 @@ app.post('/register', async (req, res) => {
   } catch (error) {
     console.error('エラー:', error);
     res.status(500).json({ error: 'ユーザー登録に失敗しました', message: error.message });
+  }finally {
+    connection2.release(); // 接続を解放
   }
 });
 
@@ -135,6 +142,7 @@ app.post('/login', async (req, res) => {
     return res.status(400).json({ error: 'ユーザー名とパスワードは必須です' });
   }
 
+  const connection2 = await connection.getConnection();
   try {
     // ユーザーの情報をデータベースから取得
     const [rows] = await connection.query('SELECT * FROM users WHERE username = ?', [username]);
@@ -183,6 +191,8 @@ app.post('/login', async (req, res) => {
   } catch (error) {
     console.error('エラー:', error);
     res.status(500).json({ error: 'ログインに失敗しました', message: error.message });
+  }finally {
+    connection2.release(); // 接続を解放
   }
 });
 
@@ -242,6 +252,7 @@ app.post('/saveOrUpdate', isAuthenticated, async(req, res) => {
   `;
 
   const userId = req.session.userId;
+  const connection2 = await connection.getConnection();
 
   try {
     const [result] = await connection.query(query, [formattedDate, value, mood, diary, userId, formattedWakeUpTime, formattedBedTime, star]);
@@ -249,6 +260,8 @@ app.post('/saveOrUpdate', isAuthenticated, async(req, res) => {
   } catch (error) {
     console.error('データベースエラー:', error);
     res.status(500).json({ error: 'データベースエラー', message: error.message });
+  }finally {
+    connection2.release(); // 接続を解放
   }
 });
 
@@ -256,6 +269,7 @@ app.post('/saveOrUpdate', isAuthenticated, async(req, res) => {
 app.get('/getData', isAuthenticated, async (req, res) => {
 
   const tableName = `sleep_info_user_${req.session.userId}`;
+  const connection2 = await connection.getConnection();
 
   try {
     const [results] = await connection.query(`SELECT * FROM ${tableName} ORDER BY date ASC`);
@@ -263,6 +277,8 @@ app.get('/getData', isAuthenticated, async (req, res) => {
   } catch (error) {
     console.error('データ取得エラー:', error);
     res.status(500).json({ error: 'データ取得エラー', message: error.message });
+  }finally {
+    connection2.release(); // 接続を解放
   }
 });
 
@@ -279,6 +295,7 @@ app.get('/getDataByDate', isAuthenticated, async (req, res) => {
   const formattedDate = format(parseISO(date), 'yyyy-MM-dd');
 
   const tableName = `sleep_info_user_${req.session.userId}`;
+  const connection2 = await connection.getConnection();
 
   try {
     const query = `SELECT * FROM ${tableName} WHERE date = ?`;
@@ -292,6 +309,8 @@ app.get('/getDataByDate', isAuthenticated, async (req, res) => {
   } catch (error) {
     console.error('データ取得エラー:', error);
     res.status(500).json({ error: 'データ取得エラー', message: error.message });
+  }finally {
+    connection2.release(); // 接続を解放
   }
 });
 
@@ -319,6 +338,7 @@ app.get('/getDataInRange', isAuthenticated, async (req, res) => {
 
 
     const offset = Math.max(0, (pageNumber - 1) * pageLimit); // OFFSET が負の数にならないように
+    const connection2 = await connection.getConnection();
 
   try {
     const tableName = `sleep_info_user_${req.session.userId}`;
@@ -344,6 +364,8 @@ app.get('/getDataInRange', isAuthenticated, async (req, res) => {
   } catch (error) {
     console.error('データ取得エラー:', error);
     res.status(500).json({ error: 'データ取得エラー', message: error.message });
+  } finally {
+    connection2.release(); // 接続を解放
   }
 });
 
@@ -363,6 +385,7 @@ app.get('/getDataInRange2', async(req, res) => {
   SELECT * FROM ${tableName}
   WHERE date BETWEEN ? AND ?
   `;
+  const connection2 = await connection.getConnection();
 
   try {
     const [result] = await connection.execute(query, [start, end]);
@@ -370,6 +393,8 @@ app.get('/getDataInRange2', async(req, res) => {
   } catch (err) {
     console.error('データ取得エラー:', err);
     res.status(500).json({ error: 'データ取得エラー' });
+  } finally {
+    connection2.release(); // 接続を解放
   }
 });
 
@@ -387,15 +412,5 @@ process.on('SIGINT', async () => {
   } catch (err) {
     console.error('プール終了エラー:', err);
     process.exit(1);
-  }
-});
-
-app.get('/data', async (req, res) => {
-  const connection2 = await connection.getConnection();
-  try {
-    const [rows] = await connection2.query('SELECT * FROM data');
-    res.json(rows);
-  } finally {
-    connection2.release(); // 接続を解放
   }
 });
