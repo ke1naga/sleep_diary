@@ -106,7 +106,6 @@ document.getElementById('dataForm').addEventListener('submit', function (event) 
             // 同じ日付が存在する場合はその数値を上書き
             values[index] = sleepDuration;
             values2[index] = mood;
-            diaries[index] = diary;
             bedTimes[index] =bed_times;
             wakeUpTimes[index] = wake_up_times;
             stars[index]= star;
