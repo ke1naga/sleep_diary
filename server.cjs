@@ -10,11 +10,12 @@ const cors = require('cors');
 require('dotenv').config();  // dotenvを読み込む
 
 
-// /health エンドポイント
+// /health エンドポイント-------------
 app.get('/health', (req, res) => {
   res.status(200).send('Server is healthy!');
 });
 
+//接続pool-----------
 const connection = mysql.createPool({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
@@ -22,10 +23,11 @@ const connection = mysql.createPool({
   database: process.env.DB_NAME,
   connectTimeout: 10000, // 10秒で接続タイムアウト
   connectionLimit: 5,      // プール内で使用する接続の上限
-  idleTimeout: 10000,       // アイデル接続を閉じるまでの時間（ミリ秒）
+  acquireTimeout: 5000, // タイムアウト（ms）
+  idleTimeout: 10000,       // アイドル接続を閉じるまでの時間（ms）
 });
 
-// 非同期接続テスト
+// 非同期接続テスト-------
 async function testConnection() {
   try {
     const [rows] = await connection.query('SELECT 1');
@@ -46,7 +48,7 @@ app.use(express.json()); // JSON
 // 静的ファイルを提供
 app.use(express.static('public')); 
 
-// セッション設定
+// セッション設定---------------
 app.use(session({
   secret: process.env.SESSION_SECRET,  // セッションの暗号化キー
   resave: false,
@@ -56,7 +58,7 @@ app.use(session({
   }
 }));
 
-// ログインが必要なエンドポイント用のミドルウェア
+// ログインが必要なエンドポイント用のミドルウェア---------
 function isAuthenticated(req, res, next) {
   if (req.session.loggedIn) {
     return next(); // ログインしている場合、次の処理へ
@@ -113,7 +115,7 @@ app.post('/register', async (req, res) => {
 
 
 
-// ログインページ
+// ログインページ-------------
 app.get('/login', (req, res) => {
   res.send(`
     <form method="POST" action="/login">
@@ -175,15 +177,7 @@ app.post('/login', async (req, res) => {
         );
       `;
 
-      try {
-        await connection.query(createTableQuery); // テーブルを作成
-        console.log(`テーブル ${tableName} が確認または作成されました`);
-      } catch (error) {
-        console.error(`テーブル ${tableName} の作成に失敗しました`, error);
-        return res.status(500).json({ error: 'テーブル作成エラー', message: error.message });
-      }
-
-
+    await connection.query(createTableQuery); // テーブルを作成
     // ログイン成功後に /graph.html にリダイレクト
     res.redirect('/graph.html');
   } catch (error) {
@@ -217,8 +211,6 @@ function isValidDate(dateString) {
 app.post('/saveOrUpdate', isAuthenticated, async(req, res) => {
   const { date, value, mood, diary, user_id, wake_up_times, bed_times, star} = req.body;
 
-  console.log('受け取ったデータ:', { date, value, mood, diary, user_id, wake_up_times, bed_times, star});  // ここで確認
-
   if (!date || !isValidDate(date)) {
     return res.status(400).json({ error: '無効な日付形式です' });
   }
@@ -230,7 +222,6 @@ app.post('/saveOrUpdate', isAuthenticated, async(req, res) => {
   // UTCの日付を取得し、ローカルタイムでフォーマット
   const localDate = parseISO(date);
   const formattedDate = format(localDate, 'yyyy-MM-dd'); // 'yyyy-MM-dd' の形式にフォーマット
-  console.log(formattedDate);  // 例: '2025-01-09'
   
    // 時間を 'HH:mm' 形式にフォーマット
    const formattedBedTime = format(new Date(`1970-01-01T${bed_times}Z`), 'HH:mm');
@@ -254,7 +245,6 @@ app.post('/saveOrUpdate', isAuthenticated, async(req, res) => {
 
   try {
     const [result] = await connection.query(query, [formattedDate, value, mood, diary, userId, formattedWakeUpTime, formattedBedTime, star]);
-    console.log('データ保存または更新成功:', result);
     res.json({ message: 'データが保存または更新されました', result });
   } catch (error) {
     console.error('データベースエラー:', error);
@@ -400,15 +390,12 @@ process.on('SIGINT', async () => {
   }
 });
 
-
-// 他の終了イベントにも対応する
-process.on('SIGTERM', async () => {
+app.get('/data', async (req, res) => {
+  const connection2 = await connection.getConnection();
   try {
-    await connection.end();
-    console.log('サーバーが終了しました');
-    process.exit(0);
-  } catch (err) {
-    console.error('接続プール終了エラー:', err);
-    process.exit(1);
+    const [rows] = await connection2.query('SELECT * FROM data');
+    res.json(rows);
+  } finally {
+    connection2.release(); // 接続を解放
   }
 });
