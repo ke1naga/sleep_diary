@@ -27,21 +27,6 @@ const connection = mysql.createPool({
   idleTimeout: 10000,       // アイドル接続を閉じるまでの時間（ms）
 });
 
-// 非同期接続テスト-------
-async function testConnection() {
-  const connection2 = await connection.getConnection();
-  try {
-    const [rows] = await connection.query('SELECT 1');
-    console.log('データベース接続成功:', rows);
-  } catch (error) {
-    console.error('データベース接続エラー:', error);
-    process.exit(1); // エラー時はプロセス終了
-  }finally {
-    connection2.release(); // 接続を解放
-  }
-}
-testConnection();
-
 // URLエンコードされたデータをパース
 app.use(express.urlencoded({ extended: true })); 
 
